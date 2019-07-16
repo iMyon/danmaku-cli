@@ -7,9 +7,9 @@ describe('client', function() {
     const result = await BangumiApi.getPageList(aid);
     console.log(result);
   });
-  it('getView', async function() {
+  it('getBangumiList', async function() {
     this.timeout(60000);
-    const result = await BangumiApi.getView(aid);
+    const result = await BangumiApi.getBangumiList();
     console.log(result);
   });
 });

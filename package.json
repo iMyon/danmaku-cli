@@ -5,10 +5,6 @@
     "src/**/*.{js}": [
       "eslint --fix",
       "git add"
-    ],
-    "test/**/*.{js}": [
-      "eslint --fix",
-      "git add"
     ]
   },
   "dependencies": {
