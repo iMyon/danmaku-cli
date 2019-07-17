@@ -10,7 +10,7 @@ class DanmukuConverter {
       PlayResY: 1080, // 分辨率 高
       font: '微软雅黑', // 字体
       bold: true, // 是否加粗
-      fontSize: 30, // 字体大小
+      fontSize: 40, // 字体大小
       lineCount: 50, // 弹幕最大行数
       speed: 12, // 滚动弹幕驻留时间（秒），越小越快
       fixedSpeed: 4, // 顶端/底部弹幕驻留时间（秒），越小越快
@@ -36,11 +36,11 @@ PlayResY: ${this.config.PlayResY}
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Default,微软雅黑,54,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0.00,0.00,1,1,0,2,20,20,120,0"
+Style: Default,微软雅黑,54,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0.00,0.00,1,1,0,2,20,20,120,0
 Style: Danmaku,${this.config.font},${this.config.fontSize},&H${this.config.alpha}FFFFFF,&H${
       this.config.alpha
     }FFFFFF,&H${this.config.alpha}000000,&H${this.config.alpha}000000,${~~this.config
-      .bold},0,0,0,100,100,0.00,0.00,1,1,0,2,20,20,20,0`;
+      .bold},0,0,0,100,100,0.00,0.00,1,1,0,2,20,20,20,0\n`;
 
     let eventsString = `[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n`;
 
@@ -49,12 +49,20 @@ Style: Danmaku,${this.config.font},${this.config.fontSize},&H${this.config.alpha
     // lineRecords[type][dsaArray[num]] type:0 滚动 1 顶部 2底部
     const lineRecords = [Array(this.config.lineCount), Array(this.config.lineCount), Array(this.config.lineCount)];
 
-    for (let i = 0; i < dElements.length; i++) {
-      const dElement = dElements[i];
-      const danmukuPosition = dElement._attributes.p.split(',').map(e => {
-        return parseInt(e);
+    const danmukuList = dElements
+      .map(e => {
+        return {
+          danmukuPosition: e._attributes.p.split(',').map(e => {
+            return Number(e);
+          }),
+          danmukuText: e._text,
+        };
+      })
+      .sort((a, b) => {
+        return a.danmukuPosition[0] > b.danmukuPosition[0] ? 1 : -1;
       });
-      const danmukuText = dElement._text;
+    for (let i = 0; i < danmukuList.length; i++) {
+      const { danmukuPosition, danmukuText } = danmukuList[i];
       const text = danmukuText;
       let layer = -3;
       let type = 1;
@@ -95,10 +103,10 @@ Style: Danmaku,${this.config.font},${this.config.fontSize},&H${this.config.alpha
       else {
         continue;
       }
-      const ef = type === 1 ? `\\move(" +  + "${move1}, ${move24}, ${move3}, ${move24})` : `\\pos(${move1}, ${move24})`;
+      const ef = type === 1 ? `\\move(${move1}, ${move24}, ${move3}, ${move24})` : `\\pos(${move1}, ${move24})`;
       const eventString = `Dialogue: ${layer},${formatTime(start)},${formatTime(
         end
-      )},Danmaku,,0000,0000,0000,,{${ef}\\c&H${color}${text}`;
+      )},Danmaku,,0000,0000,0000,,{${ef}\\c&H${color}}${text}`;
       eventsString = eventsString + eventString + '\n';
     }
     return `${danmukuHeader}\n${eventsString}`;
