@@ -122,9 +122,10 @@ Style: Danmaku,${this.config.font},${this.config.fontSize},&H${this.config.alpha
           return i;
         }
         let pStart = parseFloat(lineRecords[0][i].danmukuPosition[0]);
+        // TODO 寻找快速准确计算宽度的方法
         // 使用canvas计算弹幕，缺点：速度慢
-        let danmakuWidth = canvasContext.measureText(lineRecords[0][i].danmukuText).width;
-        // let danmakuWidth = lineRecords[0][i].danmukuText.length * this.config.fontSize;
+        // let danmakuWidth = canvasContext.measureText(lineRecords[0][i].danmukuText).width;
+        let danmakuWidth = lineRecords[0][i].danmukuText.length * this.config.fontSize;
         // console.log(lineRecords[0][i].danmukuText, danmakuWidth)
 
         // 待比较弹幕首次完全显示在屏幕的时间

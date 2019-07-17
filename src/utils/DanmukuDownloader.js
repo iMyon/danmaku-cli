@@ -19,16 +19,24 @@ class DanmukuDownloader {
     if (!(await exists(this.basePath))) {
       await mkdir(this.basePath);
     }
-    const videoDetail = await BangumiApi.getView(aid);
+    const pageList = await BangumiApi.getPageList(aid);
     const outputPath = path.join(this.basePath, '' + aid);
     if (!(await exists(outputPath))) {
       await mkdir(outputPath);
     }
-    for (let part of videoDetail.list) {
-      const xmlData = await DanmukuApi.getXml(part.cid);
-      await writeFile(path.join(outputPath, `${part.part}.xml`), xmlData);
-      await writeFile(path.join(outputPath, `${part.part}.ass`), this.danmukuConverter.convert(xmlData));
+    const downloadPromiseList = [];
+    for (let part of pageList) {
+      downloadPromiseList.push(
+        // eslint-disable-next-line
+        new Promise(async resolve => {
+          const xmlData = await DanmukuApi.getXml(part.cid);
+          await writeFile(path.join(outputPath, `${part.page}.xml`), xmlData);
+          await writeFile(path.join(outputPath, `${part.page}.ass`), this.danmukuConverter.convert(xmlData));
+          resolve();
+        })
+      );
     }
+    await Promise.all(downloadPromiseList);
   }
 }
 
