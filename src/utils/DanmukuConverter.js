@@ -26,7 +26,14 @@ class DanmukuConverter {
   }
   convert(xmlString) {
     const xmlJson = XmlJs.xml2js(xmlString, { compact: true });
-    const dElements = xmlJson.i.d;
+    let dElements = xmlJson.i.d;
+    if (dElements) {
+      if (!(dElements instanceof Array)) {
+        dElements = [dElements];
+      }
+    } else {
+      dElements = [];
+    }
 
     let danmukuHeader = `\ufeff[Script Info]
 ScriptType: v4.00+
@@ -64,6 +71,7 @@ Style: Danmaku,${this.config.font},${this.config.fontSize},&H${this.config.alpha
     for (let i = 0; i < danmukuList.length; i++) {
       const { danmukuPosition, danmukuText } = danmukuList[i];
       const text = danmukuText;
+      if (text === undefined) continue;
       let layer = -3;
       let type = 1;
       const start = ~~danmukuPosition[0];

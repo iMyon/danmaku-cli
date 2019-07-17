@@ -17,4 +17,14 @@ describe('bangumi api', function() {
     const result = await BangumiApi.getBangumiList();
     console.log(result);
   });
+  it('getSpview', async function() {
+    this.timeout(60000);
+    const result = await BangumiApi.getSpview(28019);
+    console.log(result);
+  });
+  it('getSeason', async function() {
+    this.timeout(60000);
+    const result = await BangumiApi.getSeason(27728);
+    console.log(result);
+  });
 });

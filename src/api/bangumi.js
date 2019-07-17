@@ -13,6 +13,17 @@ class BangumiApi {
       `https://bangumi.bilibili.com/media/web_api/search/result?season_version=-1&area=2&is_finish=-1&copyright=-1&season_status=-1&season_month=-1&pub_date=-1&style_id=-1&order=3&st=1&sort=0&page=${page}&season_type=1&pagesize=30`
     );
   }
+  static getSpview(spid) {
+    return http.get(`/spview?session_id=${spid}`);
+  }
+
+  static getSeason(seasonId) {
+    return http.get(`https://bangumi.bilibili.com/view/web_api/season?season_id=${seasonId}`);
+  }
+
+  static getEpisode(epId) {
+    return http.get(`https://bangumi.bilibili.com/view/web_api/episode?ep_id=${epId}`);
+  }
 }
 
 module.exports = BangumiApi;
