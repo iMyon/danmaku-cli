@@ -1,7 +1,7 @@
 const BangumiApi = require('../../src/api/bangumi');
 
 const aid = 789232;
-describe('client', function() {
+describe('bangumi api', function() {
   it('getPageList', async function() {
     this.timeout(60000);
     const result = await BangumiApi.getPageList(aid);

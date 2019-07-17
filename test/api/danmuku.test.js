@@ -1,12 +1,11 @@
-const BangumiApi = require('../../src/api/bangumi');
 const DanmukuApi = require('../../src/api/danmuku');
-
-const aid = 789232;
-describe('client', function() {
+const DanmukuConverter = require('../../src/utils/DanmukuConverter');
+const converter = new DanmukuConverter();
+const cid = 1147523;
+describe('danmuku api', function() {
   it('getXml', async function() {
     this.timeout(60000);
-    const bangumiInfo = await BangumiApi.getPageList(aid);
-    const result = await DanmukuApi.getXml(bangumiInfo[0].cid);
+    const result = await DanmukuApi.getXml(cid);
     console.log(result);
   });
 });
