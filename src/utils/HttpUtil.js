@@ -13,6 +13,9 @@ http.defaults.httpsAgent = httpsAgent;
 
 http.interceptors.response.use(
   function(response) {
+    if (response.data && response.data.code === -404) {
+      return Promise.reject(response.data);
+    }
     return response.data;
   },
   function(error) {
