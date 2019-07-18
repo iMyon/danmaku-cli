@@ -1,6 +1,9 @@
 {
   "name": "danmuku-library",
-  "version": "1.0.0",
+  "version": "0.0.1",
+  "bin": {
+    "danmuku": "src/command/index.js"
+  },
   "lint-staged": {
     "src/**/*.{js}": [
       "eslint --fix",
@@ -10,6 +13,9 @@
   "dependencies": {
     "axios": "^0.19.0",
     "canvas": "^2.5.0",
+    "chalk": "^2.4.2",
+    "commander": "^2.20.0",
+    "inquirer": "^6.5.0",
     "request": "^2.88.0",
     "socks-proxy-agent": "^4.0.2",
     "xml-js": "^1.6.11"

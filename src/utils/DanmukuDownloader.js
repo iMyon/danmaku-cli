@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const DanmukuApi = require('../api/danmuku');
 const BangumiApi = require('../api/bangumi');
+const StringUtils = require('./StringUtils');
 const { promisify } = require('util');
 const writeFile = promisify(fs.writeFile);
 const mkdir = promisify(fs.mkdir);
@@ -10,10 +11,9 @@ const exists = promisify(fs.exists);
 
 class DanmukuDownloader {
   constructor(config = {}) {
-    this.config = {};
+    this.config = { basePath: 'output' };
     Object.assign(this.config, config);
     this.danmukuConverter = new DanmukuConverter();
-    this.basePath = 'output';
   }
 
   /**
@@ -22,11 +22,15 @@ class DanmukuDownloader {
    * @returns {Promise<void>}
    */
   async download(bangumiSymbol, bangumiName = '') {
-    await mkdirWhenNotExist(this.basePath);
-    const outputPath = path.join(this.basePath, '' + bangumiSymbol + bangumiName);
-    await mkdirWhenNotExist(outputPath);
+    await mkdirWhenNotExist(this.config.basePath);
+    let outputPath = path.join(this.config.basePath, '' + bangumiSymbol + bangumiName);
     let pageList = [];
     if (bangumiSymbol.startsWith('av')) {
+      if (!bangumiName) {
+        const bangumiDetail = await BangumiApi.getView(bangumiSymbol.substr(2));
+        outputPath += StringUtils.formatFilename(bangumiDetail.title);
+      }
+      await mkdirWhenNotExist(outputPath);
       const res = await BangumiApi.getPageList(bangumiSymbol.substr(2));
       pageList = res.map(e => {
         return {
@@ -38,6 +42,10 @@ class DanmukuDownloader {
     } else if (bangumiSymbol.startsWith('ss')) {
       const currentSeasonId = bangumiSymbol.substr(2);
       const res = await BangumiApi.getSeason(currentSeasonId);
+      if (!bangumiName) {
+        outputPath += StringUtils.formatFilename(res.result.series_title);
+      }
+      await mkdirWhenNotExist(outputPath);
       await mkdirWhenNotExist(path.join(outputPath, res.result.season_title));
       const seasonIds = res.result.seasons.map(e => e.season_id).filter(e => e + '' !== currentSeasonId);
       res.result.episodes.forEach(e => (e.season_title = res.result.season_title));
@@ -57,7 +65,7 @@ class DanmukuDownloader {
         };
       });
     } else {
-      return Promise.reject('找不到匹配的解析规则');
+      return Promise.reject('找不到匹配的解析规则' + bangumiSymbol);
     }
     const downloadPromiseList = [];
     for (let part of pageList) {
