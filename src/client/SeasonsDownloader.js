@@ -14,6 +14,7 @@ class SeasonsDownloader {
     this.config = {
       startPage: 1,
       pageSize: 10,
+      sleepTime: 64 * 1000, // ms
     };
     Object.assign(this.config, config);
   }
@@ -27,7 +28,7 @@ class SeasonsDownloader {
       while (retryTimes--) {
         try {
           flag = await this.downloadAPageSeason(i, this.config.pageSize);
-          await sleep(64 * 1000);
+          await sleep(this.config.sleepTime);
           break;
         } catch (e) {
           console.error(`第${i}页下载失败，正在重试，剩余重试次数${retryTimes}`);
@@ -54,7 +55,15 @@ class SeasonsDownloader {
         })
       );
     }
-    await Promise.all(promises);
+    return new Promise((resolve, reject) => {
+      Promise.all(promises)
+        .then(() => {
+          resolve();
+        })
+        .catch(e => {
+          reject(e);
+        });
+    });
   }
 }
 
