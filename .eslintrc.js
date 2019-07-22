@@ -42,5 +42,6 @@ module.exports = {
     'no-new': [0],
     // 禁止 return await
     'no-return-await': [0],
+    'no-async-promise-executor': [0],
   },
 };

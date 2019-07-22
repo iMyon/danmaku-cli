@@ -7,7 +7,7 @@
 const BangumiApi = require('../api/bangumi');
 const DanmukuDownloader = require('../utils/DanmukuDownloader');
 const StringUtils = require('../utils/StringUtils');
-const downloader = new DanmukuDownloader();
+const FsUtil = require('../utils/FsUtil');
 
 class SeasonsDownloader {
   constructor(config = {}) {
@@ -15,10 +15,13 @@ class SeasonsDownloader {
       startPage: 1,
       pageSize: 10,
       sleepTime: 64 * 1000, // ms
+      outputPath: 'output',
     };
     Object.assign(this.config, config);
+    this.downloader = new DanmukuDownloader({ basePath: this.config.outputPath });
   }
   async download() {
+    await FsUtil.mkdirWhenNotExist(this.downloader.config.basePath);
     let i = this.config.startPage;
     // eslint-disable-next-line
     while (true) {
@@ -34,8 +37,9 @@ class SeasonsDownloader {
           console.error(`第${i}页下载失败，正在重试，剩余重试次数${retryTimes}`);
         }
       }
-      if (retryTimes === 0) {
-        console.error('下载失败，当前页数${i}');
+      if (retryTimes <= 0) {
+        console.error(`下载失败，当前页数${i}`);
+        process.exit(9);
         break;
       }
       if (flag === true) break;
@@ -50,7 +54,7 @@ class SeasonsDownloader {
       promises.push(
         // eslint-disable-next-line
         new Promise(async resolve => {
-          await downloader.download(`ss${bgm.season_id}`, StringUtils.formatFilename(bgm.title));
+          await this.downloader.download(`ss${bgm.season_id}`, StringUtils.formatFilename(bgm.title));
           resolve();
         })
       );

@@ -6,14 +6,21 @@ const BangumiApi = require('../api/bangumi');
 const StringUtils = require('./StringUtils');
 const { promisify } = require('util');
 const writeFile = promisify(fs.writeFile);
-const mkdir = promisify(fs.mkdir);
-const exists = promisify(fs.exists);
+const pLimit = require('p-limit');
+const ora = require('ora');
+const chalk = require('chalk');
+const FsUtil = require('./FsUtil');
 
 class DanmukuDownloader {
   constructor(config = {}) {
-    this.config = { basePath: 'output' };
+    this.config = {
+      basePath: 'output',
+      maxConcurrency: 5,
+    };
     Object.assign(this.config, config);
     this.danmukuConverter = new DanmukuConverter();
+    this.limit = pLimit(this.config.maxConcurrency);
+    this.spinner = ora(' ').start();
   }
 
   /**
@@ -22,7 +29,7 @@ class DanmukuDownloader {
    * @returns {Promise<void>}
    */
   async download(bangumiSymbol, bangumiName = '') {
-    await mkdirWhenNotExist(this.config.basePath);
+    await FsUtil.mkdirWhenNotExist(this.config.basePath);
     let outputPath = path.join(this.config.basePath, '' + bangumiSymbol + bangumiName);
     let pageList = [];
     if (bangumiSymbol.startsWith('av')) {
@@ -30,7 +37,7 @@ class DanmukuDownloader {
         const bangumiDetail = await BangumiApi.getView(bangumiSymbol.substr(2));
         outputPath += StringUtils.formatFilename(bangumiDetail.title);
       }
-      await mkdirWhenNotExist(outputPath);
+      await FsUtil.mkdirWhenNotExist(outputPath);
       const res = await BangumiApi.getPageList(bangumiSymbol.substr(2));
       pageList = res.map(e => {
         return {
@@ -45,14 +52,14 @@ class DanmukuDownloader {
       if (!bangumiName) {
         outputPath += StringUtils.formatFilename(res.result.series_title);
       }
-      await mkdirWhenNotExist(outputPath);
-      await mkdirWhenNotExist(path.join(outputPath, res.result.season_title));
+      await FsUtil.mkdirWhenNotExist(outputPath);
+      await FsUtil.mkdirWhenNotExist(path.join(outputPath, res.result.season_title));
       const seasonIds = res.result.seasons.map(e => e.season_id).filter(e => e + '' !== currentSeasonId);
       res.result.episodes.forEach(e => (e.season_title = res.result.season_title));
       const episodes = res.result.episodes;
       for (let seasonId of seasonIds) {
         const res = await BangumiApi.getSeason(seasonId);
-        await mkdirWhenNotExist(path.join(outputPath, res.result.season_title));
+        await FsUtil.mkdirWhenNotExist(path.join(outputPath, res.result.season_title));
         res.result.episodes.forEach(e => (e.season_title = res.result.season_title));
         episodes.push(...res.result.episodes);
       }
@@ -70,27 +77,25 @@ class DanmukuDownloader {
     const downloadPromiseList = [];
     for (let part of pageList) {
       downloadPromiseList.push(
-        // eslint-disable-next-line
-        new Promise(async resolve => {
-          let _outputPath = outputPath;
-          if (part.season_title) {
-            _outputPath = path.join(_outputPath, part.season_title);
-          }
-          const xmlData = await DanmukuApi.getXml(part.cid);
-          await writeFile(path.join(_outputPath, `${part.index}.xml`), xmlData);
-          await writeFile(path.join(_outputPath, `${part.index}.ass`), this.danmukuConverter.convert(xmlData));
-          resolve();
-        })
+        this.limit(
+          () =>
+            new Promise(async resolve => {
+              let _outputPath = outputPath;
+              if (part.season_title) {
+                _outputPath = path.join(_outputPath, part.season_title);
+              }
+              const xmlData = await DanmukuApi.getXml(part.cid);
+              await writeFile(path.join(_outputPath, `${part.index}.xml`), xmlData);
+              await writeFile(path.join(_outputPath, `${part.index}.ass`), this.danmukuConverter.convert(xmlData));
+              this.spinner.text = `pending: ${this.limit.pendingCount}`;
+              resolve();
+            })
+        )
       );
     }
+    console.log(chalk.blue(`\ndownloading: ${bangumiSymbol}${bangumiName}`));
     await Promise.all(downloadPromiseList);
-    console.log(`${bangumiSymbol}${bangumiName} 下载完成`);
-  }
-}
-
-async function mkdirWhenNotExist(path) {
-  if (!(await exists(path))) {
-    await mkdir(path);
+    console.log(chalk.green(`\ndownloaded: ${bangumiSymbol}${bangumiName}`));
   }
 }
 

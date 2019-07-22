@@ -8,8 +8,9 @@ const http = axios.create({
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101 Firefox/68.0',
   },
 });
-const httpsAgent = new SocksProxyAgent('socks5://127.0.0.1:1088');
-http.defaults.httpsAgent = httpsAgent;
+if (process.env.DANMUKU_SOCKS_PROXY) {
+  http.defaults.httpsAgent = new SocksProxyAgent(process.env.DANMUKU_SOCKS_PROXY);
+}
 
 http.interceptors.response.use(
   function(response) {
