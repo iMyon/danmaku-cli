@@ -34,7 +34,7 @@ class SeasonsDownloader {
         try {
           this.downloader.spinner.start();
           flag = await this.downloadAPageSeason(i, this.config.pageSize);
-          this.downloader.spinner.succeed(chalk.green(`第${i}页下载完成`));
+          this.downloader.spinner.stop();
           let waitingSeconds = this.config.sleepTime / 1000;
           const spinner = ora(`waiting for next page: ${waitingSeconds}s`).start();
           const ticker = setInterval(() => {

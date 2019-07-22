@@ -101,9 +101,9 @@ class DanmukuDownloader {
         )
       );
     }
-    console.log(chalk.blue(`\ndownloading: ${bangumiSymbol}${bangumiName}`));
+    const currentSpiner = ora(chalk.blue(`${bangumiSymbol}${bangumiName}`)).start();
     await Promise.all(downloadPromiseList);
-    console.log(chalk.green(`\ndownloaded: ${bangumiSymbol}${bangumiName}`));
+    currentSpiner.succeed(chalk.green(`${bangumiSymbol}${bangumiName}`));
   }
 }
 
