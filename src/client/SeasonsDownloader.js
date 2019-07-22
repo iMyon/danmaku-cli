@@ -8,6 +8,8 @@ const BangumiApi = require('../api/bangumi');
 const DanmukuDownloader = require('../utils/DanmukuDownloader');
 const StringUtils = require('../utils/StringUtils');
 const FsUtil = require('../utils/FsUtil');
+const ora = require('ora');
+const chalk = require('chalk');
 
 class SeasonsDownloader {
   constructor(config = {}) {
@@ -18,7 +20,7 @@ class SeasonsDownloader {
       outputPath: 'output',
     };
     Object.assign(this.config, config);
-    this.downloader = new DanmukuDownloader({ basePath: this.config.outputPath });
+    this.downloader = new DanmukuDownloader({ basePath: this.config.outputPath, downloadRelatedSeason: false });
   }
   async download() {
     await FsUtil.mkdirWhenNotExist(this.downloader.config.basePath);
@@ -30,8 +32,17 @@ class SeasonsDownloader {
       let retryTimes = 5; // 重试次数
       while (retryTimes--) {
         try {
+          this.downloader.spinner.start();
           flag = await this.downloadAPageSeason(i, this.config.pageSize);
+          this.downloader.spinner.succeed(chalk.green(`第${i}页下载完成`));
+          let waitingSeconds = this.config.sleepTime / 1000;
+          const spinner = ora(`waiting for next page: ${waitingSeconds}s`).start();
+          const ticker = setInterval(() => {
+            spinner.text = `waiting for next page: ${--waitingSeconds}s`;
+          }, 1000);
           await sleep(this.config.sleepTime);
+          spinner.stop();
+          clearInterval(ticker);
           break;
         } catch (e) {
           console.error(`第${i}页下载失败，正在重试，剩余重试次数${retryTimes}`);

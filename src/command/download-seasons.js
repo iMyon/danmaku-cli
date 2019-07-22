@@ -2,10 +2,10 @@ const SeasonsDownloader = require('../client/SeasonsDownloader');
 module.exports = function downloadSeasons(program) {
   program
     .command('download-seasons')
-    .option('-n, --page-size <number>', 'page size of season list api, default: 10')
-    .option('-s, --start-page <number>', 'start page number of season list api, default: 1')
-    .option('--sleep-time <number>', '')
-    .option('--max-concurrency <number>', 'max concurrency of download danmuku file，default: 5')
+    .option('-n, --page-size <number>', 'page size of season list api', 10)
+    .option('-s, --start-page <number>', 'start page number of season list api', 1)
+    .option('--sleep-time <number>', '', 60000)
+    .option('--max-concurrency <number>', 'max concurrency of download danmuku file', 5)
     .option('-o, --output-path <string>', '')
     .action(async args => {
       let config = {};

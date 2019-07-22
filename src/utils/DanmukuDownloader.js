@@ -16,11 +16,12 @@ class DanmukuDownloader {
     this.config = {
       basePath: 'output',
       maxConcurrency: 5,
+      downloadRelatedSeason: true, // 自动下载相关的season，比如传递奈叶第一季的ss号，会自动下载其他几季的弹幕
     };
     Object.assign(this.config, config);
     this.danmukuConverter = new DanmukuConverter();
     this.limit = pLimit(this.config.maxConcurrency);
-    this.spinner = ora(' ').start();
+    this.spinner = ora('').start();
   }
 
   /**
@@ -54,14 +55,17 @@ class DanmukuDownloader {
       }
       await FsUtil.mkdirWhenNotExist(outputPath);
       await FsUtil.mkdirWhenNotExist(path.join(outputPath, res.result.season_title));
-      const seasonIds = res.result.seasons.map(e => e.season_id).filter(e => e + '' !== currentSeasonId);
       res.result.episodes.forEach(e => (e.season_title = res.result.season_title));
       const episodes = res.result.episodes;
-      for (let seasonId of seasonIds) {
-        const res = await BangumiApi.getSeason(seasonId);
-        await FsUtil.mkdirWhenNotExist(path.join(outputPath, res.result.season_title));
-        res.result.episodes.forEach(e => (e.season_title = res.result.season_title));
-        episodes.push(...res.result.episodes);
+      if (this.config.downloadRelatedSeason) {
+        // 下载关联season
+        const seasonIds = res.result.seasons.map(e => e.season_id).filter(e => e + '' !== currentSeasonId);
+        for (let seasonId of seasonIds) {
+          const res = await BangumiApi.getSeason(seasonId);
+          await FsUtil.mkdirWhenNotExist(path.join(outputPath, res.result.season_title));
+          res.result.episodes.forEach(e => (e.season_title = res.result.season_title));
+          episodes.push(...res.result.episodes);
+        }
       }
       pageList = episodes.map(e => {
         return {
@@ -85,8 +89,12 @@ class DanmukuDownloader {
                 _outputPath = path.join(_outputPath, part.season_title);
               }
               const xmlData = await DanmukuApi.getXml(part.cid);
-              await writeFile(path.join(_outputPath, `${part.index}.xml`), xmlData);
-              await writeFile(path.join(_outputPath, `${part.index}.ass`), this.danmukuConverter.convert(xmlData));
+              let filename = part.index;
+              if (part.name) {
+                filename += `.${StringUtils.formatFilename(part.name)}`;
+              }
+              await writeFile(path.join(_outputPath, `${filename}.xml`), xmlData);
+              await writeFile(path.join(_outputPath, `${filename}.ass`), this.danmukuConverter.convert(xmlData));
               this.spinner.text = `pending: ${this.limit.pendingCount}`;
               resolve();
             })
