@@ -14,7 +14,7 @@ describe('bangumi api', function() {
   });
   it('getBangumiList', async function() {
     this.timeout(60000);
-    const result = await BangumiApi.getBangumiList();
+    const result = await BangumiApi.getBangumiList({ page: 1, pageSize: 1 });
     console.log(result);
   });
   it('getSpview', async function() {

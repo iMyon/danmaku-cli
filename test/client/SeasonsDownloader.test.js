@@ -5,10 +5,15 @@
 */
 
 const SeasonsDownloaderTest = require('../../src/client/SeasonsDownloader');
-const seasonsDownloader = new SeasonsDownloaderTest();
 describe('DownloadAllSeason', function() {
   it('download', async function() {
     this.timeout(Infinity);
+    const seasonsDownloader = new SeasonsDownloaderTest({
+      startPage: 2,
+      stopPage: 3,
+      pageSize: 1,
+      sleepTime: 0,
+    });
     await seasonsDownloader.download();
   });
 });

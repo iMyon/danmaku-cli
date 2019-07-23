@@ -15,6 +15,7 @@ class SeasonsDownloader {
   constructor(config = {}) {
     this.config = {
       startPage: 1,
+      stopPage: Infinity,
       pageSize: 10,
       sleepTime: 64 * 1000, // ms
       outputPath: 'output',
@@ -35,14 +36,6 @@ class SeasonsDownloader {
           this.downloader.spinner.start();
           flag = await this.downloadAPageSeason(i, this.config.pageSize);
           this.downloader.spinner.stop();
-          let waitingSeconds = this.config.sleepTime / 1000;
-          const spinner = ora(`waiting for next page: ${waitingSeconds}s`).start();
-          const ticker = setInterval(() => {
-            spinner.text = `waiting for next page: ${--waitingSeconds}s`;
-          }, 1000);
-          await sleep(this.config.sleepTime);
-          spinner.stop();
-          clearInterval(ticker);
           break;
         } catch (e) {
           console.error(`第${i}页下载失败，正在重试，剩余重试次数${retryTimes}`);
@@ -54,6 +47,15 @@ class SeasonsDownloader {
         break;
       }
       if (flag === true) break;
+      if (i >= this.config.stopPage) break;
+      let waitingSeconds = this.config.sleepTime / 1000;
+      const spinner = ora(`waiting for next page: ${waitingSeconds}s`).start();
+      const ticker = setInterval(() => {
+        spinner.text = `waiting for next page: ${--waitingSeconds}s`;
+      }, 1000);
+      await sleep(this.config.sleepTime);
+      spinner.stop();
+      clearInterval(ticker);
       i++;
     }
   }

@@ -5,7 +5,7 @@ describe('DanmukuDownloader', function() {
     this.timeout(60000);
     await downloader.download('av135433');
   });
-  it('download sp', async function() {
+  it('download ss', async function() {
     this.timeout(60000);
     await downloader.download('ss1535');
   });
