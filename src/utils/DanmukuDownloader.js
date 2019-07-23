@@ -31,7 +31,7 @@ class DanmukuDownloader {
    */
   async download(bangumiSymbol, bangumiName = '') {
     await FsUtil.mkdirWhenNotExist(this.config.basePath);
-    let outputPath = path.join(this.config.basePath, '' + bangumiSymbol + bangumiName);
+    let outputPath = path.join(this.config.basePath, '' + bangumiSymbol + StringUtils.formatFilename(bangumiName));
     let pageList = [];
     if (bangumiSymbol.startsWith('av')) {
       if (!bangumiName) {
@@ -54,16 +54,18 @@ class DanmukuDownloader {
         outputPath += StringUtils.formatFilename(res.result.series_title);
       }
       await FsUtil.mkdirWhenNotExist(outputPath);
-      await FsUtil.mkdirWhenNotExist(path.join(outputPath, res.result.season_title));
-      res.result.episodes.forEach(e => (e.season_title = res.result.season_title));
+      const seasonTitle = StringUtils.formatFilename(res.result.season_title);
+      await FsUtil.mkdirWhenNotExist(path.join(outputPath, seasonTitle));
+      res.result.episodes.forEach(e => (e.season_title = seasonTitle));
       const episodes = res.result.episodes;
       if (this.config.downloadRelatedSeason) {
         // 下载关联season
         const seasonIds = res.result.seasons.map(e => e.season_id).filter(e => e + '' !== currentSeasonId);
         for (let seasonId of seasonIds) {
           const res = await BangumiApi.getSeason(seasonId);
-          await FsUtil.mkdirWhenNotExist(path.join(outputPath, res.result.season_title));
-          res.result.episodes.forEach(e => (e.season_title = res.result.season_title));
+          const seasonTitle = StringUtils.formatFilename(res.result.season_title);
+          await FsUtil.mkdirWhenNotExist(path.join(outputPath, seasonTitle));
+          res.result.episodes.forEach(e => (e.season_title = seasonTitle));
           episodes.push(...res.result.episodes);
         }
       }
