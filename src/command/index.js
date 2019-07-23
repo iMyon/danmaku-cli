@@ -4,6 +4,7 @@ const chalk = require('chalk');
 const program = require('commander');
 const inquirer = require('inquirer');
 const download = require('./download');
+const convert = require('./convert');
 const downloadSeasons = require('./download-seasons');
 
 // console.log(chalk.green('Welcome!'));
@@ -14,6 +15,7 @@ program.install = function(plugin) {
   plugin(this);
 };
 
+program.install(convert);
 program.install(download);
 program.install(downloadSeasons);
 

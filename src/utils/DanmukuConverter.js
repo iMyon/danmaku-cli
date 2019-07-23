@@ -11,16 +11,17 @@ class DanmukuConverter {
       font: '微软雅黑', // 字体
       bold: true, // 是否加粗
       fontSize: 40, // 字体大小
-      lineCount: 50, // 弹幕最大行数
+      lineLimit: 50, // 弹幕最大行数
       speed: 12, // 滚动弹幕驻留时间（秒），越小越快
       fixedSpeed: 4, // 顶端/底部弹幕驻留时间（秒），越小越快
       alpha: 140, // 弹幕透明度,256为全透明，0为不透明
+      accurateDanmukuWidth: false, // 使用canvas计算弹幕宽度，精准度提升，滚动弹幕排版更合理，但是非常影响处理效率，建议处理少量弹幕转换时开启
     };
     Object.assign(this.config, config);
     let alpha16 = this.config.alpha.toString(16);
     this.config.alpha = prefixInteger(alpha16, 2);
-    if (this.config.fontSize * this.config.lineCount > this.config.PlayResY) {
-      this.config.lineCount = ~~(this.config.PlayResY / this.config.fontSize);
+    if (this.config.fontSize * this.config.lineLimit > this.config.PlayResY) {
+      this.config.lineLimit = ~~(this.config.PlayResY / this.config.fontSize);
     }
     canvasContext.font = `${this.config.fontSize}px ${this.config.font}`;
   }
@@ -54,7 +55,7 @@ Style: Danmaku,${this.config.font},${this.config.fontSize},&H${this.config.alpha
     // 保存lineCount大小的数组
     // 每个元素保存最后一次出现在行数下标+1的dsArray元素
     // lineRecords[type][dsaArray[num]] type:0 滚动 1 顶部 2底部
-    const lineRecords = [Array(this.config.lineCount), Array(this.config.lineCount), Array(this.config.lineCount)];
+    const lineRecords = [Array(this.config.lineLimit), Array(this.config.lineLimit), Array(this.config.lineLimit)];
 
     const danmukuList = dElements
       .map(e => {
@@ -138,10 +139,13 @@ Style: Danmaku,${this.config.font},${this.config.fontSize},&H${this.config.alpha
           return i;
         }
         let pStart = parseFloat(lineRecords[0][i].danmukuPosition[0]);
-        // TODO 寻找快速准确计算宽度的方法
         // 使用canvas计算弹幕，缺点：速度慢
-        // let danmakuWidth = canvasContext.measureText(lineRecords[0][i].danmukuText).width;
-        let danmakuWidth = lineRecords[0][i].danmukuText.length * this.config.fontSize;
+        let danmakuWidth;
+        if (this.config.accurateDanmukuWidth) {
+          danmakuWidth = canvasContext.measureText(lineRecords[0][i].danmukuText).width;
+        } else {
+          danmakuWidth = lineRecords[0][i].danmukuText.length * this.config.fontSize;
+        }
         // console.log(lineRecords[0][i].danmukuText, danmakuWidth)
 
         // 待比较弹幕首次完全显示在屏幕的时间
