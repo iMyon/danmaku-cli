@@ -6,6 +6,7 @@ const inquirer = require('inquirer');
 const download = require('./download');
 const convert = require('./convert');
 const downloadSeasons = require('./download-seasons');
+const downloadFinishBangumi = require('./download-finish-bangumi');
 
 // console.log(chalk.green('Welcome!'));
 
@@ -18,6 +19,7 @@ program.install = function(plugin) {
 program.install(convert);
 program.install(download);
 program.install(downloadSeasons);
+program.install(downloadFinishBangumi);
 
 if (process.argv.length <= 2) {
   // 不加参数输出help

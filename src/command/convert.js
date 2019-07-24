@@ -11,6 +11,7 @@ const stat = promisify(fs.stat);
 module.exports = function convert(program) {
   program
     .command('convert')
+    .description('转换xml弹幕文件为ass格式，支持文件或文件夹的批量转换')
     .option('-f, --file <string>', '需要转换的xml文件')
     .option('--folder <string>', '需要处理的文件夹（文件和文件夹二选一）')
     .option('--match <string>', '文件名匹配规则', '.xml$')
@@ -70,7 +71,7 @@ module.exports = function convert(program) {
                     const danmukuStr = converter.convert(xmlContent);
                     const assFilename = path.join(dir, filename.replace('.xml', '.ass'));
                     await writeFile(assFilename, danmukuStr);
-                    console.log(chalk.green(`[success] ${filePath} => ${assFilename}`));
+                    console.log(`${chalk.green('[success] ' + filePath)} => ${chalk.green(assFilename)}`);
                   } catch (e) {
                     console.error(chalk.red(`[ error ] ${filePath}`));
                   }

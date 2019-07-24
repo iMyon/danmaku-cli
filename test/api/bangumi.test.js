@@ -14,7 +14,7 @@ describe('bangumi api', function() {
   });
   it('getBangumiList', async function() {
     this.timeout(60000);
-    const result = await BangumiApi.getBangumiList({ page: 1, pageSize: 1 });
+    const result = await BangumiApi.getBangumiList({ page: 1, pagesize: 1 });
     console.log(result);
   });
   it('getSpview', async function() {
@@ -30,6 +30,11 @@ describe('bangumi api', function() {
   it('getEpisode', async function() {
     this.timeout(60000);
     const result = await BangumiApi.getEpisode(276626);
+    console.log(result);
+  });
+  it('getNewList', async function() {
+    this.timeout(60000);
+    const result = await BangumiApi.getNewList({ ps: 3 });
     console.log(result);
   });
 });

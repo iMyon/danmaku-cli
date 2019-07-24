@@ -1,8 +1,8 @@
-const SeasonsDownloader = require('../client/SeasonsDownloader');
-module.exports = function downloadSeasons(program) {
+const FinishBangumiDownloader = require('../client/FinishBangumiDownloader');
+module.exports = function downloadFinishBangumi(program) {
   program
-    .command('download-seasons')
-    .description('下载全部日本地区索引番剧弹幕（ss地址番剧）')
+    .command('download-finish-bangumi')
+    .description('下载全部已完结动画弹幕')
     .option('-n, --page-size <number>', '分页大小', 10)
     .option('-s, --start-page <number>', '下载开始页', 1)
     .option('--stop-page <number>', '下载结束页')
@@ -17,7 +17,7 @@ module.exports = function downloadSeasons(program) {
       if (args.sleepTime) config.sleepTime = args.sleepTime;
       if (args.maxConcurrency) config.maxConcurrency = args.maxConcurrency;
       if (args.outputPath) config.outputPath = args.outputPath;
-      const seasonsDownloader = new SeasonsDownloader(config);
-      await seasonsDownloader.download();
+      const downloader = new FinishBangumiDownloader(config);
+      await downloader.download();
     });
 };

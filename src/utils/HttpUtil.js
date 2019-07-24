@@ -1,8 +1,9 @@
 const axios = require('axios');
 const SocksProxyAgent = require('socks-proxy-agent');
+const BilibiliConstants = require('../constants/BilibiliConstants');
 
 const http = axios.create({
-  baseURL: 'https://api.bilibili.com/',
+  baseURL: BilibiliConstants.API_HOST,
   timeout: 60000,
   headers: {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101 Firefox/68.0',
