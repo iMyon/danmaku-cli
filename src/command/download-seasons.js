@@ -7,7 +7,7 @@ module.exports = function downloadSeasons(program) {
     .option('-s, --start-page <number>', '下载开始页', 1)
     .option('--stop-page <number>', '下载结束页')
     .option('--sleep-time <number>', '每页下载完成等待时间（ms），不建议设置太小，造成服务器压力可能被封IP', 60000)
-    .option('--max-concurrency <number>', '弹幕文件最大同时下载数，不建议设置太大，同上', 5)
+    .option('--max-concurrency <number>', '弹幕文件下载最大并发数，不建议设置太大，同上', 5)
     .option('-o, --output-path <string>', '输出目录', 'output')
     .action(async args => {
       let config = {};

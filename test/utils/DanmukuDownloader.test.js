@@ -9,4 +9,8 @@ describe('DanmukuDownloader', function() {
     this.timeout(60000);
     await downloader.download('ss1535');
   });
+  it('download ep', async function() {
+    this.timeout(60000);
+    await downloader.download('ep276626');
+  });
 });
