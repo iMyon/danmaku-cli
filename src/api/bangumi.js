@@ -1,4 +1,5 @@
 const { http } = require('../utils/HttpUtil');
+const cheerio = require('cheerio');
 class BangumiApi {
   static getPageList(aid) {
     return http.get(`https://www.bilibili.com/widget/getPageList?aid=${aid}`);
@@ -21,8 +22,16 @@ class BangumiApi {
     return http.get(`https://bangumi.bilibili.com/view/web_api/season?season_id=${seasonId}`);
   }
 
-  static getEpisode(epId) {
-    return http.get(`https://bangumi.bilibili.com/view/web_api/episode?ep_id=${epId}`);
+  static async getEpisode(epId) {
+    const result = await http.get(`https://www.bilibili.com/bangumi/play/ep${epId}/`);
+    const $ = cheerio.load(result);
+    const titleMeta = $('meta[property="og:title"]');
+    const seasonMeta = $('meta[property="og:url"]');
+    const season_id = seasonMeta.attr('content').match(/ss(\d+)/)[1];
+    return {
+      title: titleMeta.attr('content'),
+      season_id,
+    };
   }
 }
 

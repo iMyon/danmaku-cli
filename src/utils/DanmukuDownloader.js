@@ -30,6 +30,11 @@ class DanmukuDownloader {
    * @returns {Promise<void>}
    */
   async download(bangumiSymbol, bangumiName = '') {
+    if (bangumiSymbol.startsWith('ep')) {
+      const epInfo = await BangumiApi.getEpisode(bangumiSymbol.substr(2));
+      await this.download(`ss${epInfo.season_id}`, bangumiName);
+      return;
+    }
     await FsUtil.mkdirWhenNotExist(this.config.basePath);
     let outputPath = path.join(this.config.basePath, '' + bangumiSymbol + StringUtils.formatFilename(bangumiName));
     let pageList = [];

@@ -27,4 +27,9 @@ describe('bangumi api', function() {
     const result = await BangumiApi.getSeason(27728);
     console.log(result);
   });
+  it('getEpisode', async function() {
+    this.timeout(60000);
+    const result = await BangumiApi.getEpisode(276626);
+    console.log(result);
+  });
 });
