@@ -88,24 +88,20 @@ class DanmukuDownloader {
     const downloadPromiseList = [];
     for (let part of pageList) {
       downloadPromiseList.push(
-        this.limit(
-          () =>
-            new Promise(async resolve => {
-              let _outputPath = outputPath;
-              if (part.season_title) {
-                _outputPath = path.join(_outputPath, part.season_title);
-              }
-              const xmlData = await DanmukuApi.getXml(part.cid);
-              let filename = part.index;
-              if (part.name) {
-                filename += `.${StringUtils.formatFilename(part.name)}`;
-              }
-              await writeFile(path.join(_outputPath, `${filename}.xml`), xmlData);
-              await writeFile(path.join(_outputPath, `${filename}.ass`), this.danmukuConverter.convert(xmlData));
-              this.spinner.text = `pending: ${this.limit.pendingCount}`;
-              resolve();
-            })
-        )
+        this.limit(async () => {
+          let _outputPath = outputPath;
+          if (part.season_title) {
+            _outputPath = path.join(_outputPath, part.season_title);
+          }
+          const xmlData = await DanmukuApi.getXml(part.cid);
+          let filename = part.index;
+          if (part.name) {
+            filename += `.${StringUtils.formatFilename(part.name)}`;
+          }
+          await writeFile(path.join(_outputPath, `${filename}.xml`), xmlData);
+          await writeFile(path.join(_outputPath, `${filename}.ass`), this.danmukuConverter.convert(xmlData));
+          this.spinner.text = `pending: ${this.limit.pendingCount}`;
+        })
       );
     }
     const currentSpiner = ora(chalk.blue(`${bangumiSymbol}${bangumiName}`)).start();

@@ -25,12 +25,7 @@ class FinishBangumiDownloader extends BaseCrawler {
           .split('/')
           .pop();
       }
-      promises.push(
-        new Promise(async resolve => {
-          await this.downloader.download(bangumiSymbol, StringUtils.formatFilename(bgm.title));
-          resolve();
-        })
-      );
+      promises.push(this.downloader.download(bangumiSymbol, StringUtils.formatFilename(bgm.title)));
     }
     return new Promise((resolve, reject) => {
       Promise.all(promises)

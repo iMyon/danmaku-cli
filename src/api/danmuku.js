@@ -8,6 +8,9 @@ class DanmukuApi {
     const requestConfig = { encoding: 'binary' };
     if (process.env.DANMUKU_SOCKS_PROXY) {
       requestConfig.agent = new SocksProxyAgent(process.env.DANMUKU_SOCKS_PROXY);
+      requestConfig.headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101 Firefox/68.0',
+      };
     }
     return new Promise((resolve, reject) => {
       request.get(`https://comment.bilibili.com/${cid}.xml`, requestConfig, function(err, resp, body) {
@@ -23,7 +26,11 @@ class DanmukuApi {
             resolve(result.toString());
           });
         } else {
-          resolve(body);
+          if (resp.statusCode >= 400) {
+            reject(resp);
+          } else {
+            resolve(body);
+          }
         }
       });
     });

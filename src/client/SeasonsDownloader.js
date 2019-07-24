@@ -17,12 +17,7 @@ class SeasonsDownloader extends BaseCrawler {
     if (bangumiList.result.data.length === 0) return true;
     const promises = [];
     for (let bgm of bangumiList.result.data) {
-      promises.push(
-        new Promise(async resolve => {
-          await this.downloader.download(`ss${bgm.season_id}`, StringUtils.formatFilename(bgm.title));
-          resolve();
-        })
-      );
+      promises.push(this.downloader.download(`ss${bgm.season_id}`, StringUtils.formatFilename(bgm.title)));
     }
     return new Promise((resolve, reject) => {
       Promise.all(promises)
