@@ -1,10 +1,22 @@
 # danmuku-project
 
-弹幕归档计划
+bilibili 弹幕归档计划
 
 ## 命令行工具
 
-### 弹幕下载：danmuku download [video]
+环境依赖：[Node.js](https://nodejs.org/zh-cn/download/) 10+
+
+### 安装
+
+```bash
+npm install -g danmuku-project
+```
+
+### 弹幕下载
+
+下载视频弹幕，会同时下载`xml`和生成`ass`字幕文件
+
+命令：`danmuku download [video]`
 
 示例：
 
@@ -57,9 +69,15 @@ Options:
   -h, --help                          output usage information
 ```
 
-### 番剧索引弹幕爬虫：danmuku download-seasons
+### 官方番剧弹幕爬虫
 
-主要是 ss 类官方番剧
+爬取所有官方番剧弹幕，主要是 ss 类官方番剧
+
+**封禁注意：大量数据爬取会触发 B 站安全策略，如无特殊需求不要使用此命令**
+
+**默认参数是比较温柔的爬虫策略，即每分钟抓取 10 个番剧的弹幕**
+
+命令：`danmuku download-seasons`
 
 帮助文档`danmuku download-seasons -h`：
 
@@ -84,9 +102,11 @@ Options:
 - `danmuku download-seasons`：默认配置开始下载
 - `danmuku download-seasons -n 5 -s 100 --stop-page=200`：每页下载 5 个番剧，从 100 页开始下载到 200 页停止
 
-### 下载已完结番剧弹幕：danmuku download-finish-bangumi
+### 下载已完结番剧弹幕
 
 主要包含早期 UP 主投稿的番剧和官方完结番剧
+
+命令：`danmuku download-finish-bangumi`
 
 使用方法同上
 
@@ -108,3 +128,11 @@ Options:
   -h, --help                  output usage information
 
 ```
+
+### 代理设置
+
+支持 socks5 代理，声明环境变量`DANMUKU_SOCKS_PROXY`后所有网络都通过代理请求。
+
+- bash: `DANMUKU_SOCKS_PROXY='socks5://127.0.0.1:1080'`
+- powershell：`$env:DANMUKU_SOCKS_PROXY='socks5://127.0.0.1:1080'`
+- windows cmd: `set DANMUKU_SOCKS_PROXY='socks5://127.0.0.1:1080'`
