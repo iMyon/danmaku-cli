@@ -4,7 +4,7 @@ const request = require('request');
 const SocksProxyAgent = require('socks-proxy-agent');
 const chalk = require('chalk');
 const config = require('../config');
-
+const BilibiliConstants = require('../constants/BilibiliConstants');
 class DanmukuApi {
   static async getXml(cid) {
     const requestConfig = { encoding: 'binary' };
@@ -15,7 +15,7 @@ class DanmukuApi {
       };
     }
     return new Promise((resolve, reject) => {
-      request.get(`https://comment.bilibili.com/${cid}.xml`, requestConfig, function(err, resp, body) {
+      request.get(`${BilibiliConstants.API_HOST}/x/v1/dm/list.so?oid=${cid}`, requestConfig, function(err, resp, body) {
         if (err) {
           reject(err);
         } else if (resp.headers['content-encoding'] === 'deflate') {

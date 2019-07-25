@@ -8,6 +8,7 @@ const http = axios.create({
   timeout: 60000,
   headers: {
     'User-Agent': config.UA,
+    // 'Cookie': ''
   },
 });
 if (process.env.DANMUKU_SOCKS_PROXY) {

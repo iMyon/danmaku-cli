@@ -1,13 +1,14 @@
 const { http } = require('../utils/HttpUtil');
 const cheerio = require('cheerio');
 const BilibiliConstants = require('../constants/BilibiliConstants');
+const config = require('../config');
 class BangumiApi {
   static getPageList(aid) {
     return http.get(`${BilibiliConstants.MAIN_HOST}/widget/getPageList?aid=${aid}`);
   }
 
   static getView(aid, page = 1) {
-    return http.get(`/view?type=json&appkey=03fc8eb101b091fb&id=${aid}&page=${page}`);
+    return http.get(`/view?type=json&appkey=${config.appKey}&id=${aid}&page=${page}`);
   }
 
   static getBangumiList(params = {}) {

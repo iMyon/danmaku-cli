@@ -3,6 +3,7 @@ const downloader = new DanmukuDownloader();
 describe('DanmukuDownloader', function() {
   it('download av', async function() {
     this.timeout(60000);
+    // av38989970会员视频
     await downloader.download('av135433');
   });
   it('download ss', async function() {
