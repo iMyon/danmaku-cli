@@ -7,6 +7,10 @@
 const BangumiApi = require('../api/bangumi');
 const BaseCrawler = require('./BaseCrawler');
 const StringUtils = require('../utils/StringUtils');
+const fs = require('fs');
+const logger = fs.createWriteStream('log.txt', {
+  flags: 'a', // 'a' means appending (old data will be preserved)
+});
 
 class FinishBangumiDownloader extends BaseCrawler {
   constructor(config = {}) {
@@ -33,7 +37,12 @@ class FinishBangumiDownloader extends BaseCrawler {
           resolve();
         })
         .catch(e => {
-          reject(e);
+          if (e.response && e.response.status === 404) {
+            logger.write(`[error] ${e.config.url}`);
+            resolve();
+          } else {
+            reject(e);
+          }
         });
     });
   }
