@@ -15,7 +15,11 @@ class BaseCrawler {
       outputPath: 'output',
     };
     Object.assign(this.config, config);
-    this.downloader = new DanmukuDownloader({ basePath: this.config.outputPath, downloadRelatedSeason: false });
+    this.downloader = new DanmukuDownloader({
+      basePath: this.config.outputPath,
+      downloadRelatedSeason: false,
+      restTime: this.config.restTime,
+    });
   }
 
   async download() {

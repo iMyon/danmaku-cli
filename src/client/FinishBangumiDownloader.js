@@ -9,6 +9,7 @@ const BaseCrawler = require('./BaseCrawler');
 const StringUtils = require('../utils/StringUtils');
 const fs = require('fs');
 const path = require('path');
+const chalk = require('chalk');
 const FsUtil = require('../utils/FsUtil');
 const { promisify } = require('util');
 const logger = fs.createWriteStream('log.txt', {
@@ -27,7 +28,10 @@ class FinishBangumiDownloader extends BaseCrawler {
       path.join('raw', `bgm-list-size${this.config.pageSize}-page${page}.json`),
       JSON.stringify(bangumiList, null, 2)
     );
-    if (bangumiList.data.archives.length === 0) return true;
+    if (bangumiList.data.archives === null) {
+      console.log(chalk.green('下载完成'));
+      process.exit();
+    }
     const promises = [];
     for (let bgm of bangumiList.data.archives) {
       if (this.config.ignore.some(f => bgm.title.match(f))) {
