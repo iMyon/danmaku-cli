@@ -17,6 +17,7 @@ class DanmukuDownloader {
       basePath: 'output',
       maxConcurrency: 5,
       downloadRelatedSeason: true, // 自动下载相关的season，比如传递奈叶第一季的ss号，会自动下载其他几季的弹幕
+      restTime: 1000, // 太快不好，每次弹幕文件下载请求处理完成后休息一会，单位ms
     };
     Object.assign(this.config, config);
     this.danmukuConverter = new DanmukuConverter();
@@ -45,6 +46,10 @@ class DanmukuDownloader {
       }
       await FsUtil.mkdirWhenNotExist(outputPath);
       const res = await BangumiApi.getPageList(bangumiSymbol.substr(2));
+      if (res === null) {
+        console.log(`找不到番剧信息，已跳过[${bangumiSymbol}${bangumiName}]`);
+        return;
+      }
       pageList = res.map(e => {
         return {
           cid: e.cid,
@@ -101,6 +106,7 @@ class DanmukuDownloader {
           await writeFile(path.join(_outputPath, `${filename}.xml`), xmlData);
           await writeFile(path.join(_outputPath, `${filename}.ass`), this.danmukuConverter.convert(xmlData));
           this.spinner.text = `pending: ${this.limit.pendingCount}`;
+          await sleep(this.config.restTime);
         })
       );
     }
@@ -108,6 +114,10 @@ class DanmukuDownloader {
     await Promise.all(downloadPromiseList);
     currentSpiner.succeed(chalk.green(`${bangumiSymbol}${bangumiName}`));
   }
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 module.exports = DanmukuDownloader;

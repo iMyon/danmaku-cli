@@ -8,7 +8,6 @@ const http = axios.create({
   timeout: 60000,
   headers: {
     'User-Agent': config.UA,
-    // 'Cookie': ''
   },
 });
 if (process.env.DANMUKU_SOCKS_PROXY) {
@@ -17,7 +16,7 @@ if (process.env.DANMUKU_SOCKS_PROXY) {
 
 http.interceptors.response.use(
   function(response) {
-    if (response.data && response.data.code === -404) {
+    if (response.data && response.data.code <= -400) {
       return Promise.reject(response.data);
     }
     return response.data;
