@@ -1,18 +1,18 @@
+const request = require('request');
 const axios = require('axios');
 const SocksProxyAgent = require('socks-proxy-agent');
 const BilibiliConstants = require('../constants/BilibiliConstants');
 const config = require('../config');
 
+const baseRequest = request.defaults({
+  headers: { 'User-Agent': config.UA },
+});
+
 const http = axios.create({
   baseURL: BilibiliConstants.API_HOST,
   timeout: 60000,
-  headers: {
-    'User-Agent': config.UA,
-  },
+  headers: { 'User-Agent': config.UA },
 });
-if (process.env.DANMUKU_SOCKS_PROXY) {
-  http.defaults.httpsAgent = new SocksProxyAgent(process.env.DANMUKU_SOCKS_PROXY);
-}
 
 http.interceptors.response.use(
   function(response) {
@@ -27,4 +27,15 @@ http.interceptors.response.use(
   }
 );
 
-module.exports.http = http;
+module.exports.setProxy = function(proxy) {
+  http.defaults.httpsAgent = new SocksProxyAgent(proxy);
+  request.defaults.agent = new SocksProxyAgent(proxy);
+};
+module.exports.setCookie = function(cookie) {
+  http.defaults.headers.common['Cookie'] = cookie;
+  const j = request.jar();
+  j.setCookie(cookie);
+  baseRequest.defaults.jar = j;
+};
+module.exports.http = http; // axios实例
+module.exports.request = baseRequest; // request实例

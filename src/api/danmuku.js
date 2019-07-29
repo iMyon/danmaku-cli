@@ -1,25 +1,19 @@
-const { http } = require('../utils/HttpUtil');
 const zlib = require('zlib');
-const request = require('request');
-const SocksProxyAgent = require('socks-proxy-agent');
+const { request } = require('../utils/HttpUtil');
 const chalk = require('chalk');
-const config = require('../config');
 const BilibiliConstants = require('../constants/BilibiliConstants');
 class DanmukuApi {
   static async getXml(cid) {
     const requestConfig = { encoding: 'binary' };
-    if (process.env.DANMUKU_SOCKS_PROXY) {
-      requestConfig.agent = new SocksProxyAgent(process.env.DANMUKU_SOCKS_PROXY);
-      requestConfig.headers = {
-        'User-Agent': config.UA,
-      };
+    if (request.defaults.agent) {
+      requestConfig.agent = request.defaults.agent;
     }
     return new Promise((resolve, reject) => {
+      // axios会抛错所以使用request手动处理压缩
       request.get(`${BilibiliConstants.API_HOST}/x/v1/dm/list.so?oid=${cid}`, requestConfig, function(err, resp, body) {
         if (err) {
           reject(err);
         } else if (resp.headers['content-encoding'] === 'deflate') {
-          // console.log(Buffer.isBuffer(body))
           zlib.inflateRaw(Buffer.from(body, 'binary'), function(err, result) {
             if (err) {
               reject(err);
