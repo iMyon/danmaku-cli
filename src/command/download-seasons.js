@@ -2,6 +2,7 @@ const SeasonsDownloader = require('../client/SeasonsDownloader');
 module.exports = function downloadSeasons(program) {
   program
     .command('download-seasons')
+    .alias('dls')
     .description('下载全部日本地区索引番剧弹幕（ss地址番剧）')
     .option('-n, --page-size <number>', '分页大小', 10)
     .option('-s, --start-page <number>', '下载开始页', 1)

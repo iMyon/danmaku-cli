@@ -2,6 +2,7 @@ const FinishBangumiDownloader = require('../client/FinishBangumiDownloader');
 module.exports = function downloadFinishBangumi(program) {
   program
     .command('download-finish-bangumi')
+    .alias('dlfb')
     .description('下载全部已完结动画弹幕')
     .option('-n, --page-size <number>', '分页大小', 10)
     .option('-s, --start-page <number>', '下载开始页', 1)

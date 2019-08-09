@@ -1,6 +1,19 @@
 # danmuku-project
 
-bilibili 弹幕归档计划
+（bilibili？）弹幕归档计划
+
+---
+
+- [命令行工具](#命令行工具)
+  - [安装](#安装)
+  - [弹幕下载](#弹幕下载)
+  - [弹幕转换](#命令行工具)
+  - [官方番剧弹幕爬虫](#官方番剧弹幕爬虫)
+  - [已完结番剧弹幕爬虫](#已完结番剧弹幕爬虫)
+  - [代理设置](#代理设置)
+  - [cookie 设置](#cookie设置)
+
+---
 
 ## 命令行工具
 
@@ -9,7 +22,7 @@ bilibili 弹幕归档计划
 ### 安装
 
 ```bash
-npm install -g danmuku-project
+npm install -g git+https://github.com/iMyon/danmuku-project.git#develop
 ```
 
 ### 弹幕下载
@@ -36,14 +49,16 @@ Options:
   -h, --help  output usage information
 ```
 
-### 弹幕转换：danmuku convert
+### 弹幕转换
 
 `xml`弹幕转换为`ass`格式弹幕
+
+命令：`danmuku convert [options]`
 
 示例：
 
 - 转换单个文件：`danmuku convert -f ./test.xml`
-- 转换目录下所有文件：`danmuku convert --folder=./`，深度转换，生成同名 ass 文件
+- 转换目录下所有文件：`danmuku convert --folder=./`，生成同名 ass 文件，会搜索子目录所有符合的文件进行转换
 
 更多参数`danmuku convert -h`：
 
@@ -69,17 +84,19 @@ Options:
   -h, --help                          output usage information
 ```
 
+---
+
 ### 官方番剧弹幕爬虫
 
 爬取所有官方番剧弹幕，主要是 ss 类官方番剧
 
 **封禁注意：大量数据爬取会触发 B 站安全策略，如无特殊需求不要使用此命令**
 
-**默认参数是比较温柔的爬虫策略，即每分钟抓取 10 个番剧的弹幕**
+**默认策略：每分钟最多抓取 10 个番剧的弹幕，弹幕文件下载并发数为 5，每个并发连接完成后休息 1 秒**
 
 命令：`danmuku download-seasons`
 
-帮助文档`danmuku download-seasons -h`：
+更多参数： `danmuku download-seasons -h`：
 
 ```shell
 $ danmuku download-seasons -h
@@ -103,7 +120,7 @@ Options:
 - `danmuku download-seasons`：默认配置开始下载
 - `danmuku download-seasons -n 5 -s 100 --stop-page=200`：每页下载 5 个番剧，从 100 页开始下载到 200 页停止
 
-### 下载已完结番剧弹幕
+### 已完结番剧弹幕爬虫
 
 主要包含早期 UP 主投稿的番剧和官方完结番剧
 
@@ -140,8 +157,8 @@ danmuku download av135433 --proxy=socks5://127.0.0.1:1080
 
 ### cookie 设置
 
-支持 cookie，针对某些必需要登陆才能查看的视频，例：
+支持设置 cookie，某些视频接口只有登陆用户才能正常返回，例：
 
 ```bash
-danmuku download av135433 --cookie="yourcookiestring"
+danmuku download av38989970 --cookie="yourcookiestring"
 ```
