@@ -24,7 +24,7 @@ class DanmukuApi {
         } else {
           if (resp.statusCode >= 400) {
             if (resp.statusCode === 412) {
-              console.error(chalk.red('已触发B站安全策略，请不要大规模进行爬虫动作！'));
+              console.error(chalk.red('已触发B站安全策略'));
             }
             reject(resp);
           } else {
