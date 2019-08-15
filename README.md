@@ -4,7 +4,7 @@
 
 ---
 
-- [归档](#归档)
+- [存档](#存档)
 - [命令行工具](#命令行工具)
   - [安装](#安装)
   - [弹幕下载](#弹幕下载)
@@ -16,9 +16,9 @@
 
 ---
 
-## 归档
+## 存档
 
-- 完结番剧弹幕：[Onedrive](https://1drv.ms/u/s!Ah5dJipbGetNng1XDMcv32xoJEDV?e=XlEfWs)
+- 完结番剧弹幕：[Mega 盘](https://mega.nz/#F!wdtmkIzZ!7FeM5azSqaSfPaeaJyGH0A)
 
 ## 命令行工具
 
