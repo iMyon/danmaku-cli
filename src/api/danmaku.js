@@ -2,7 +2,7 @@ const zlib = require('zlib');
 const { request } = require('../utils/HttpUtil');
 const chalk = require('chalk');
 const BilibiliConstants = require('../constants/BilibiliConstants');
-class DanmukuApi {
+class DanmakuApi {
   static async getXml(cid) {
     const requestConfig = { encoding: 'binary' };
     if (request.defaults.agent) {
@@ -36,4 +36,4 @@ class DanmukuApi {
   }
 }
 
-module.exports = DanmukuApi;
+module.exports = DanmakuApi;
