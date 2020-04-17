@@ -1,3 +1,5 @@
+const eventManager = require('../eventManager/EventManager');
+
 const DanmakuConverter = require('./DanmakuConverter');
 const fs = require('fs');
 const path = require('path');
@@ -41,8 +43,9 @@ class DanmakuDownloader {
     let outputPath = path.join(this.config.basePath, '' + bangumiSymbol + StringUtils.formatFilename(bangumiName));
     let pageList = [];
     if (bangumiSymbol.startsWith('av')) {
+      let bangumiDetail;
       if (!bangumiName) {
-        const bangumiDetail = await BangumiApi.getView(bangumiSymbol.substr(2));
+        bangumiDetail = await BangumiApi.getView(bangumiSymbol.substr(2));
         outputPath += StringUtils.formatFilename(bangumiDetail.title);
       }
       await FsUtil.mkdirWhenNotExist(outputPath);
@@ -58,9 +61,11 @@ class DanmakuDownloader {
           name: e.pagename,
         };
       });
+      eventManager.emit('av', bangumiSymbol, bangumiDetail, res);
     } else if (bangumiSymbol.startsWith('ss')) {
       const currentSeasonId = bangumiSymbol.substr(2);
       const res = await BangumiApi.getSeason(currentSeasonId);
+      eventManager.emit('season', bangumiSymbol, res);
       if (!bangumiName) {
         outputPath += StringUtils.formatFilename(res.result.series_title);
       }
@@ -74,6 +79,7 @@ class DanmakuDownloader {
         const seasonIds = res.result.seasons.map(e => e.season_id).filter(e => e + '' !== currentSeasonId);
         for (let seasonId of seasonIds) {
           const res = await BangumiApi.getSeason(seasonId);
+          eventManager.emit('season', bangumiSymbol, res);
           const seasonTitle = StringUtils.formatFilename(res.result.season_title);
           await FsUtil.mkdirWhenNotExist(path.join(outputPath, seasonTitle));
           res.result.episodes.forEach(e => (e.season_title = seasonTitle));
@@ -104,8 +110,10 @@ class DanmakuDownloader {
           if (part.name) {
             filename += `.${StringUtils.formatFilename(part.name)}`;
           }
+          const assData = this.danmakuConverter.convert(xmlData);
           await writeFile(path.join(_outputPath, `${filename}.xml`), xmlData);
-          await writeFile(path.join(_outputPath, `${filename}.ass`), this.danmakuConverter.convert(xmlData));
+          await writeFile(path.join(_outputPath, `${filename}.ass`), assData);
+          eventManager.emit('comment', part.cid, bangumiSymbol, xmlData, assData);
           this.spinner.text = `pending: ${this.limit.pendingCount}`;
           await sleep(this.config.restTime);
         })
