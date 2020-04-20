@@ -14,11 +14,11 @@ const chalk = require('chalk');
 const FsUtil = require('./FsUtil');
 
 class DanmakuDownloader {
-  constructor(config = {}) {
+  constructor(config = { downloadRelatedSeason: true }) {
     this.config = {
       basePath: 'output',
       maxConcurrency: 5,
-      downloadRelatedSeason: true, // 自动下载相关的season，比如传递奈叶第一季的ss号，会自动下载其他几季的弹幕
+      downloadRelatedSeason: config.downloadRelatedSeason, // 自动下载相关的season，比如传递奈叶第一季的ss号，会自动下载其他几季的弹幕
       restTime: 100, // 太快不好，大批量弹幕文件下载时每个连接请求处理完成后休息一会，防被封，单位ms，爬虫建议设置为1000
     };
     Object.assign(this.config, config);
