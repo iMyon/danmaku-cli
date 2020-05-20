@@ -48,9 +48,8 @@ class DanmakuDownloader {
     let outputPath = path.join(this.config.basePath, '' + bangumiSymbol + StringUtils.formatFilename(bangumiName));
     let pageList = [];
     if (bangumiSymbol.startsWith('av')) {
-      let bangumiDetail;
+      let bangumiDetail = await BangumiApi.getView(bangumiSymbol.substr(2));
       if (!bangumiName) {
-        bangumiDetail = await BangumiApi.getView(bangumiSymbol.substr(2));
         outputPath += StringUtils.formatFilename(bangumiDetail.title);
       }
       await FsUtil.mkdirWhenNotExist(outputPath);
