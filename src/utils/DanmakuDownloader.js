@@ -27,6 +27,8 @@ class DanmakuDownloader {
     this.spinner = ora('').start();
   }
 
+  downloadedVid = new Set();
+
   /**
    *
    * @param bangumiSymbol av124/ss34333
@@ -34,6 +36,9 @@ class DanmakuDownloader {
    * @returns {Promise<void>}
    */
   async download(bangumiSymbol, bangumiName = '') {
+    // 避免重复下载
+    if (this.downloadedVid.has(bangumiSymbol)) return;
+    this.downloadedVid.add(bangumiSymbol);
     if (bangumiSymbol.startsWith('ep')) {
       const epInfo = await BangumiApi.getEpisode(bangumiSymbol.substr(2));
       await this.download(`ss${epInfo.season_id}`, bangumiName);
