@@ -28,7 +28,8 @@ class FinishBangumiDownloader extends BaseCrawler {
       path.join('raw', `bgm-list-size${this.config.pageSize}-page${page}.json`),
       JSON.stringify(bangumiList, null, 2)
     );
-    if (bangumiList.data.archives === null) {
+    if (bangumiList.data.archives === null ||
+      (bangumiList.data.archives && bangumiList.data.archives.length === 0)) {
       console.log(chalk.green('下载完成'));
       process.exit();
     }
