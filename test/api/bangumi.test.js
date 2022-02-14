@@ -1,10 +1,12 @@
 const BangumiApi = require('../../src/api/bangumi');
+const assert = require('assert');
 
 const aid = 789232;
 describe('bangumi api', function() {
   it('getView', async function() {
     this.timeout(60000);
     const result = await BangumiApi.getView(aid);
+    assert.ok(result.code !== -1);
     console.log(result);
   });
   it('getPageList', async function() {
