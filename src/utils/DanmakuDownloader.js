@@ -1,7 +1,7 @@
-const DanmukuConverter = require('./DanmukuConverter');
+const DanmakuConverter = require('./DanmakuConverter');
 const fs = require('fs');
 const path = require('path');
-const DanmukuApi = require('../api/danmuku');
+const DanmakuApi = require('../api/danmaku');
 const BangumiApi = require('../api/bangumi');
 const StringUtils = require('./StringUtils');
 const { promisify } = require('util');
@@ -12,7 +12,7 @@ const chalk = require('chalk');
 const FsUtil = require('./FsUtil');
 const { decodeBv } = require('./BilibiliUtils');
 
-class DanmukuDownloader {
+class DanmakuDownloader {
   constructor(config = {}) {
     this.config = {
       basePath: 'output',
@@ -21,7 +21,7 @@ class DanmukuDownloader {
       restTime: 100, // 太快不好，大批量弹幕文件下载时每个连接请求处理完成后休息一会，防被封，单位ms，爬虫建议设置为1000
     };
     Object.assign(this.config, config);
-    this.danmukuConverter = new DanmukuConverter();
+    this.danmakuConverter = new DanmakuConverter();
     this.limit = pLimit(this.config.maxConcurrency);
     this.spinner = ora('').start();
   }
@@ -101,13 +101,13 @@ class DanmukuDownloader {
           if (part.season_title) {
             _outputPath = path.join(_outputPath, part.season_title);
           }
-          const xmlData = await DanmukuApi.getXml(part.cid);
+          const xmlData = await DanmakuApi.getXml(part.cid);
           let filename = part.index;
           if (part.name) {
             filename += `.${StringUtils.formatFilename(part.name)}`;
           }
           await writeFile(path.join(_outputPath, `${filename}.xml`), xmlData);
-          await writeFile(path.join(_outputPath, `${filename}.ass`), this.danmukuConverter.convert(xmlData));
+          await writeFile(path.join(_outputPath, `${filename}.ass`), this.danmakuConverter.convert(xmlData));
           this.spinner.text = `pending: ${this.limit.pendingCount}`;
           await sleep(this.config.restTime);
         })
@@ -123,4 +123,4 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-module.exports = DanmukuDownloader;
+module.exports = DanmakuDownloader;

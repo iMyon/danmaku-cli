@@ -1,11 +1,11 @@
-const DanmukuDownloader = require('../utils/DanmukuDownloader');
+const DanmakuDownloader = require('../utils/DanmakuDownloader');
 module.exports = function download(program) {
   program
     .command('download <video>')
     .alias('dl')
-    .description('下载视频弹幕，支持av/ss/ep形式视频。示例：danmuku download av135433')
+    .description('下载视频弹幕，支持av/ss/ep形式视频。示例：danmaku download av135433')
     .action(async (video, args) => {
-      const downloader = new DanmukuDownloader({ basePath: '' });
+      const downloader = new DanmakuDownloader({ basePath: '' });
       await downloader.download(video);
       process.exit();
     });

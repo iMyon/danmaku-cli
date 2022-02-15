@@ -1,8 +1,8 @@
 {
-  "name": "danmuku-library",
+  "name": "danmaku-cli",
   "version": "0.0.1",
   "bin": {
-    "danmuku": "src/command/index.js"
+    "danmaku": "src/command/index.js"
   },
   "lint-staged": {
     "src/**/*.{js}": [

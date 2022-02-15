@@ -1,4 +1,4 @@
-const DanmukuConverter = require('../utils/DanmukuConverter');
+const DanmakuConverter = require('../utils/DanmakuConverter');
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
@@ -20,7 +20,7 @@ module.exports = function convert(program) {
     .option('--font <string>', '字体', '微软雅黑')
     .option('--bold <boolean>', '是否粗体', true)
     .option(
-      '--accurate-danmuku-width <boolean>',
+      '--accurate-danmaku-width <boolean>',
       '提升弹幕宽度精准度，滚动弹幕排版更合理，但是非常影响处理效率，建议处理少量弹幕转换时开启',
       false
     )
@@ -33,7 +33,7 @@ module.exports = function convert(program) {
         console.error(chalk.red('未指定文件'));
         return;
       }
-      const converter = new DanmukuConverter({
+      const converter = new DanmakuConverter({
         PlayResX: args.playResX,
         PlayResY: args.playResY,
         font: args.font,
@@ -42,14 +42,14 @@ module.exports = function convert(program) {
         lineLimit: args.lineLimit,
         speed: args.speed,
         alpha: args.alpha,
-        accurateDanmukuWidth: args.accurateDanmukuWidth,
+        accurateDanmakuWidth: args.accurateDanmakuWidth,
       });
       if (args.file) {
         if (await exists(args.file)) {
           const xmlContent = await readFile(args.file);
-          const danmukuStr = converter.convert(xmlContent);
+          const danmakuStr = converter.convert(xmlContent);
           const filename = args.file.replace('.xml', '.ass');
-          await writeFile(filename, danmukuStr);
+          await writeFile(filename, danmakuStr);
           console.log(chalk.green(`output: ${filename}`));
         } else {
           console.error(chalk.red('文件不存在'));
@@ -68,9 +68,9 @@ module.exports = function convert(program) {
                 if (fileStat.isFile()) {
                   try {
                     const xmlContent = await readFile(filePath);
-                    const danmukuStr = converter.convert(xmlContent);
+                    const danmakuStr = converter.convert(xmlContent);
                     const assFilename = path.join(dir, filename.replace('.xml', '.ass'));
-                    await writeFile(assFilename, danmukuStr);
+                    await writeFile(assFilename, danmakuStr);
                     console.log(`${chalk.green('[success] ' + filePath)} => ${chalk.green(assFilename)}`);
                   } catch (e) {
                     console.error(chalk.red(`[ error ] ${filePath}`));

@@ -1,5 +1,5 @@
 const BangumiApi = require('../api/bangumi');
-const DanmukuDownloader = require('../utils/DanmukuDownloader');
+const DanmakuDownloader = require('../utils/DanmakuDownloader');
 const StringUtils = require('../utils/StringUtils');
 const FsUtil = require('../utils/FsUtil');
 const ora = require('ora');
@@ -15,7 +15,7 @@ class BaseCrawler {
       outputPath: 'output',
     };
     Object.assign(this.config, config);
-    this.downloader = new DanmukuDownloader({
+    this.downloader = new DanmakuDownloader({
       basePath: this.config.outputPath,
       downloadRelatedSeason: false,
       restTime: this.config.restTime,
