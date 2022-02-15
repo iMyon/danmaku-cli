@@ -27,7 +27,7 @@
 ### 安装
 
 ```bash
-npm install -g git+https://github.com/iMyon/danmaku-project.git#develop
+npm install -g damnaku-cli
 ```
 
 ### 弹幕下载
