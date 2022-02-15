@@ -116,7 +116,7 @@ Options:
   --stop-page <number>        下载结束页
   --sleep-time <number>       每页下载完成等待时间（ms），不建议设置太小，造成服务器压力可能被封IP (default: 60000)
   --max-concurrency <number>  弹幕文件下载最大并发数，不建议设置太大，同上 (default: 5)
-  --rest-time <number>        每个下载连接请求处理完成后休息一会，单位ms (default: 1000)
+  --rest-time <number>        每个下载连接请求处理完成后休息一会，单位ms (default: 2000)
   -o, --output-path <string>  输出目录 (default: "output")
   -h, --help                  output usage information
 ```
@@ -147,7 +147,7 @@ Options:
   -s, --start-page <number>   下载开始页 (default: 1)
   --stop-page <number>        下载结束页
   --sleep-time <number>       每页下载完成等待时间（ms），不建议设置太小，造成服务器压力可能被封IP (default: 60000)
-  --rest-time <number>        每个下载连接请求处理完成后休息一会，单位ms (default: 1000)
+  --rest-time <number>        每个下载连接请求处理完成后休息一会，单位ms (default: 2000)
   --max-concurrency <number>  弹幕文件下载最大并发数，不建议设置太大，同上 (default: 5)
   -o, --output-path <string>  输出目录 (default: "output")
   -h, --help                  output usage information
