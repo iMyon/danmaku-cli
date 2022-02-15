@@ -17,7 +17,8 @@
     ]
   },
   "scripts": {
-    "test": "mocha test/**/*.test.js"
+    "test": "mocha test/**/*.test.js",
+    "publish": "np --no-2fa --no-tests"
   },
   "dependencies": {
     "axios": "^0.19.0",
