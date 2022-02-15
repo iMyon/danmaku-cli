@@ -10,7 +10,7 @@ class DanmakuApi {
     }
     return new Promise((resolve, reject) => {
       // axios会抛错所以使用request手动处理压缩
-      request.get(`${BilibiliConstants.API_HOST}/x/v1/dm/list.so?oid=${cid}`, requestConfig, function(err, resp, body) {
+      request.get(`https://comment.bilibili.com/${cid}.xml`, requestConfig, function(err, resp, body) {
         if (err) {
           reject(err);
         } else if (resp.headers['content-encoding'] === 'deflate') {
