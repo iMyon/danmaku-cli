@@ -4,7 +4,7 @@ const BilibiliConstants = require('../constants/BilibiliConstants');
 const config = require('../config');
 class BangumiApi {
   static getPageList(aid) {
-    return http.get(`${BilibiliConstants.MAIN_HOST}/widget/getPageList?aid=${aid}`);
+    return http.get(`${BilibiliConstants.API_HOST}/x/player/pagelist?aid=${aid}`);
   }
 
   static getView(aid, page = 1) {

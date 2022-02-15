@@ -10,6 +10,7 @@ const pLimit = require('p-limit');
 const ora = require('ora');
 const chalk = require('chalk');
 const FsUtil = require('./FsUtil');
+const { decodeBv } = require('./BilibiliUtils');
 
 class DanmukuDownloader {
   constructor(config = {}) {
@@ -40,22 +41,23 @@ class DanmukuDownloader {
     await FsUtil.mkdirWhenNotExist(this.config.basePath);
     let outputPath = path.join(this.config.basePath, '' + bangumiSymbol + StringUtils.formatFilename(bangumiName));
     let pageList = [];
-    if (bangumiSymbol.startsWith('av')) {
+    if (bangumiSymbol.startsWith('av') || bangumiSymbol.startsWith('BV')) {
+      const aid = bangumiSymbol.startsWith('av') ? bangumiSymbol.substr(2) : decodeBv(bangumiSymbol);
       if (!bangumiName) {
-        const bangumiDetail = await BangumiApi.getView(bangumiSymbol.substr(2));
+        const bangumiDetail = await BangumiApi.getView(aid);
         outputPath += StringUtils.formatFilename(bangumiDetail.title);
       }
       await FsUtil.mkdirWhenNotExist(outputPath);
-      const res = await BangumiApi.getPageList(bangumiSymbol.substr(2));
+      const res = await BangumiApi.getPageList(aid);
       if (res === null) {
         console.log(`找不到番剧信息，已跳过[${bangumiSymbol}${bangumiName}]`);
         return;
       }
-      pageList = res.map(e => {
+      pageList = res.data.map(e => {
         return {
           cid: e.cid,
           index: e.page,
-          name: e.pagename,
+          name: e.part,
         };
       });
     } else if (bangumiSymbol.startsWith('ss')) {

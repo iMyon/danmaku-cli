@@ -39,6 +39,7 @@ npm install -g git+https://github.com/iMyon/danmuku-project.git#develop
 示例：
 
 - av 前缀视频：`danmuku download av135433`
+- BV 前缀视频：`danmuku download BV1Mx411w7Aq`
 - ss 前缀视频：`danmuku download ss1535`
 - ep 前缀视频：`danmuku download ep276626`
 
