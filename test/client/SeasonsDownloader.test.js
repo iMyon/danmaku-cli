@@ -10,7 +10,7 @@ describe('DownloadAllSeason', function() {
     this.timeout(Infinity);
     const seasonsDownloader = new SeasonsDownloaderTest({
       startPage: 2,
-      stopPage: 3,
+      stopPage: 2,
       pageSize: 1,
       sleepTime: 0,
     });
