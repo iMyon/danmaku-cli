@@ -1,8 +1,11 @@
-const DanmakuConverter = require('../utils/DanmakuConverter');
+/* eslint-disable no-await-in-loop */
+
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
 const { promisify } = require('util');
+const DanmakuConverter = require('../utils/DanmakuConverter');
+
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 const exists = promisify(fs.exists);
@@ -29,7 +32,7 @@ export default function convert(program) {
     .option('--line-limit <number>', '最大弹幕行数', 50)
     .option('--speed <number>', '驻留时间（s）', 12)
     .option('--alpha <number>', '透明度0-255', 140)
-    .action(async args => {
+    .action(async (args) => {
       if (!args.file && !args.folder) {
         console.error(chalk.red('未指定文件'));
         return;
@@ -57,9 +60,10 @@ export default function convert(program) {
         }
       } else if (args.folder) {
         if (await exists(args.folder)) {
-          let convertDir = async dir => {
+          const convertDir = async (dir) => {
             const filenames = await readdir(dir);
-            for (let filename of filenames) {
+            // eslint-disable-next-line no-restricted-syntax
+            for (const filename of filenames) {
               const filenameRegex = new RegExp(args.match);
               const filePath = path.join(dir, filename);
               const fileStat = await stat(filePath);
@@ -72,7 +76,7 @@ export default function convert(program) {
                     const danmakuStr = converter.convert(xmlContent);
                     const assFilename = path.join(dir, filename.replace('.xml', '.ass'));
                     await writeFile(assFilename, danmakuStr);
-                    console.log(`${chalk.green('[success] ' + filePath)} => ${chalk.green(assFilename)}`);
+                    console.log(`${chalk.green(`[success] ${filePath}`)} => ${chalk.green(assFilename)}`);
                   } catch (e) {
                     console.error(chalk.red(`[ error ] ${filePath}`));
                   }

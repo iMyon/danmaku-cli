@@ -1,16 +1,16 @@
 #!/usr/bin/env node
 
 import program from 'commander';
-import HttpUtil from '../utils/HttpUtil';
 import convert from './convert';
 import download from './download';
 import downloadSeasons from './download-seasons';
 import downloadFinishBangumi from './download-finish-bangumi';
+import { setCookie, setProxy } from '../utils/HttpUtil';
 
 program.version('0.0.1');
 
-program.install = function(plugin) {
-  plugin(this);
+program.install = (plugin) => {
+  plugin(program);
 };
 
 program.install(convert);
@@ -28,8 +28,8 @@ program.parse(process.argv);
 
 const opts = program.opts();
 if (opts.cookie) {
-  HttpUtil.setCookie(opts.cookie);
+  setCookie(opts.cookie);
 }
 if (opts.proxy) {
-  HttpUtil.setProxy(opts.proxy);
+  setProxy(opts.proxy);
 }

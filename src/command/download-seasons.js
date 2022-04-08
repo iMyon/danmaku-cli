@@ -1,4 +1,5 @@
 const SeasonsDownloader = require('../client/SeasonsDownloader');
+
 export default function downloadSeasons(program) {
   program
     .command('download-seasons')
@@ -11,8 +12,8 @@ export default function downloadSeasons(program) {
     .option('--max-concurrency <number>', '弹幕文件下载最大并发数，不建议设置太大，同上', 5)
     .option('--rest-time <number>', '每个下载连接请求处理完成后休息一会，单位ms', 1000)
     .option('-o, --output-path <string>', '输出目录', 'output')
-    .action(async args => {
-      let config = {};
+    .action(async (args) => {
+      const config = {};
       if (args.startPage) config.startPage = args.startPage;
       if (args.stopPage) config.stopPage = args.stopPage;
       if (args.pageSize) config.pageSize = args.pageSize;

@@ -6,8 +6,8 @@
 
 import SeasonsDownloaderTest from '../../src/client/SeasonsDownloader';
 
-describe('DownloadAllSeason', function() {
-  it('download', async function() {
+describe('DownloadAllSeason', function () {
+  it('download', async function () {
     this.timeout(Infinity);
     const seasonsDownloader = new SeasonsDownloaderTest({
       startPage: 2,
