@@ -1,7 +1,5 @@
 const XmlJs = require('xml-js');
-const { createCanvas } = require('canvas');
-const canvas = createCanvas(200, 200);
-const canvasContext = canvas.getContext('2d'); // 用于计算一条弹幕实际占用像素宽度
+const StringUtils = require('./StringUtils');
 
 class DanmakuConverter {
   constructor(config = {}) {
@@ -15,7 +13,6 @@ class DanmakuConverter {
       speed: 12, // 滚动弹幕驻留时间（秒），越小越快
       fixedSpeed: 4, // 顶端/底部弹幕驻留时间（秒），越小越快
       alpha: 140, // 弹幕透明度,256为全透明，0为不透明
-      accurateDanmakuWidth: false, // 使用canvas计算弹幕宽度，精准度提升，滚动弹幕排版更合理，但是非常影响处理效率，建议处理少量弹幕转换时开启
     };
     Object.assign(this.config, config);
     let alpha16 = this.config.alpha.toString(16);
@@ -23,7 +20,6 @@ class DanmakuConverter {
     if (this.config.fontSize * this.config.lineLimit > this.config.PlayResY) {
       this.config.lineLimit = ~~(this.config.PlayResY / this.config.fontSize);
     }
-    canvasContext.font = `${this.config.fontSize}px ${this.config.font}`;
   }
   convert(xmlString) {
     const xmlJson = XmlJs.xml2js(xmlString, { compact: true });
@@ -139,21 +135,14 @@ Style: Danmaku,${this.config.font},${this.config.fontSize},&H${this.config.alpha
           return i;
         }
         let pStart = parseFloat(lineRecords[0][i].danmakuPosition[0]);
-        // 使用canvas计算弹幕，缺点：速度慢
-        let danmakuWidth;
-        if (this.config.accurateDanmakuWidth) {
-          danmakuWidth = canvasContext.measureText(lineRecords[0][i].danmakuText).width;
-        } else {
-          danmakuWidth = lineRecords[0][i].danmakuText.length * this.config.fontSize;
-        }
-        // console.log(lineRecords[0][i].danmakuText, danmakuWidth)
+        const pDanmakuWidth = StringUtils.measureText(lineRecords[0][i].danmakuText, this.config.fontSize);
 
         // 待比较弹幕首次完全显示在屏幕的时间
-        let time1 = pStart + (this.config.speed * danmakuWidth) / (this.config.PlayResX + danmakuWidth);
+        let time1 = pStart + (this.config.speed * pDanmakuWidth) / (this.config.PlayResX + pDanmakuWidth);
         // 待比较弹幕完全消失在屏幕的时间
         let time2 = pStart + this.config.speed;
         // 当前弹幕最后一刻完全显示在屏幕的时间
-        danmakuWidth = danmakuText.length * this.config.fontSize;
+        const danmakuWidth = StringUtils.measureText(danmakuText, this.config.fontSize);
         let time3 = start + (this.config.speed * this.config.PlayResX) / (this.config.PlayResX + danmakuWidth);
         if (start >= time1 && time3 >= time2) {
           // 覆盖原来的
