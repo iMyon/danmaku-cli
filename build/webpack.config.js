@@ -1,5 +1,7 @@
 const path = require('path');
+const nodeExternals = require('webpack-node-externals');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const ShebangPlugin = require('webpack-shebang-plugin');
 
 const webpackConfig = {
   target: 'node', // koa项目仅在node环境下运行，因此设置称'node'
@@ -36,7 +38,13 @@ const webpackConfig = {
       '@': path.join(__dirname, '../src'),
     },
   },
-  plugins: [new CleanWebpackPlugin()],
+  plugins: [
+    // 清除lib目录
+    new CleanWebpackPlugin(),
+    // 设置命令行工具头部表示标识
+    new ShebangPlugin(),
+  ],
+  externals: [nodeExternals()], // 排除对node_modules里的依赖进行打包
 };
 
 module.exports = webpackConfig;
