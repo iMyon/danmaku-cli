@@ -1,5 +1,5 @@
 const DanmakuDownloader = require('../utils/DanmakuDownloader');
-module.exports = function download(program) {
+export default function download(program) {
   program
     .command('download <video>')
     .alias('dl')
@@ -9,4 +9,4 @@ module.exports = function download(program) {
       await downloader.download(video);
       process.exit();
     });
-};
+}

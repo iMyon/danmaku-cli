@@ -1,7 +1,8 @@
-const BangumiApi = require('../../src/api/bangumi');
-const assert = require('assert');
+import BangumiApi from '../../src/api/bangumi';
+import assert from 'assert';
 
 const aid = 789232;
+
 describe('bangumi api', function() {
   it('getView', async function() {
     this.timeout(60000);

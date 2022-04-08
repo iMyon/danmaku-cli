@@ -1,7 +1,7 @@
-const zlib = require('zlib');
-const { request } = require('../utils/HttpUtil');
-const chalk = require('chalk');
-const BilibiliConstants = require('../constants/BilibiliConstants');
+import zlib from 'zlib';
+import { request } from '../utils/HttpUtil';
+import chalk from 'chalk';
+
 class DanmakuApi {
   static async getXml(cid) {
     const requestConfig = { encoding: 'binary' };
@@ -36,4 +36,4 @@ class DanmakuApi {
   }
 }
 
-module.exports = DanmakuApi;
+export default DanmakuApi;

@@ -1,5 +1,5 @@
 const SeasonsDownloader = require('../client/SeasonsDownloader');
-module.exports = function downloadSeasons(program) {
+export default function downloadSeasons(program) {
   program
     .command('download-seasons')
     .alias('dls')
@@ -23,4 +23,4 @@ module.exports = function downloadSeasons(program) {
       const seasonsDownloader = new SeasonsDownloader(config);
       await seasonsDownloader.download();
     });
-};
+}

@@ -1,5 +1,5 @@
 const FinishBangumiDownloader = require('../client/FinishBangumiDownloader');
-module.exports = function downloadFinishBangumi(program) {
+export default function downloadFinishBangumi(program) {
   program
     .command('download-finish-bangumi')
     .alias('dlfb')
@@ -23,4 +23,4 @@ module.exports = function downloadFinishBangumi(program) {
       const downloader = new FinishBangumiDownloader(config);
       await downloader.download();
     });
-};
+}

@@ -1,7 +1,8 @@
-const { http } = require('../utils/HttpUtil');
-const cheerio = require('cheerio');
-const BilibiliConstants = require('../constants/BilibiliConstants');
-const config = require('../config');
+import { http } from '../utils/HttpUtil';
+import cheerio from 'cheerio';
+import BilibiliConstants from '../constants/BilibiliConstants';
+import config from '../config';
+
 class BangumiApi {
   static getPageList(aid) {
     return http.get(`${BilibiliConstants.API_HOST}/x/player/pagelist?aid=${aid}`);
@@ -60,4 +61,4 @@ class BangumiApi {
   }
 }
 
-module.exports = BangumiApi;
+export default BangumiApi;

@@ -1,5 +1,5 @@
-const assert = require('assert');
-const { encodeAv, decodeBv } = require('../../src/utils/BilibiliUtils');
+import assert from 'assert';
+import { encodeAv, decodeBv } from '../../src/utils/BilibiliUtils';
 
 describe('BilibiliUtils', function() {
   it('encodeAv', async function() {

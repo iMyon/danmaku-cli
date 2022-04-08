@@ -1,9 +1,6 @@
-const BangumiApi = require('../api/bangumi');
-const DanmakuDownloader = require('../utils/DanmakuDownloader');
-const StringUtils = require('../utils/StringUtils');
-const FsUtil = require('../utils/FsUtil');
-const ora = require('ora');
-const chalk = require('chalk');
+import DanmakuDownloader from '../utils/DanmakuDownloader';
+import FsUtil from '../utils/FsUtil';
+import ora from 'ora';
 
 class BaseCrawler {
   constructor(config = {}) {
@@ -65,4 +62,4 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-module.exports = BaseCrawler;
+export default BaseCrawler;

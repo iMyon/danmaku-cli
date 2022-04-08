@@ -1,5 +1,5 @@
-const XmlJs = require('xml-js');
-const StringUtils = require('./StringUtils');
+import XmlJs from 'xml-js';
+import StringUtils from './StringUtils';
 
 class DanmakuConverter {
   constructor(config = {}) {
@@ -197,4 +197,4 @@ function formatTime(seconds) {
   return hh + ':' + prefixInteger(mm, 2) + ':' + prefixInteger(ss, 2) + '.' + prefixInteger(cs, 2);
 }
 
-module.exports = DanmakuConverter;
+export default DanmakuConverter;

@@ -1,16 +1,17 @@
-const DanmakuConverter = require('./DanmakuConverter');
-const fs = require('fs');
-const path = require('path');
-const DanmakuApi = require('../api/danmaku');
-const BangumiApi = require('../api/bangumi');
-const StringUtils = require('./StringUtils');
-const { promisify } = require('util');
+import DanmakuConverter from './DanmakuConverter';
+import * as fs from 'fs';
+import * as path from 'path';
+import DanmakuApi from '../api/danmaku';
+import BangumiApi from '../api/bangumi';
+import StringUtils from './StringUtils';
+import { promisify } from 'util';
+import pLimit from 'p-limit';
+import ora from 'ora';
+import chalk from 'chalk';
+import FsUtil from './FsUtil';
+import { decodeBv } from './BilibiliUtils';
+
 const writeFile = promisify(fs.writeFile);
-const pLimit = require('p-limit');
-const ora = require('ora');
-const chalk = require('chalk');
-const FsUtil = require('./FsUtil');
-const { decodeBv } = require('./BilibiliUtils');
 
 class DanmakuDownloader {
   constructor(config = {}) {
@@ -123,4 +124,4 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-module.exports = DanmakuDownloader;
+export default DanmakuDownloader;

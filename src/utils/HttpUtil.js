@@ -1,8 +1,8 @@
-const request = require('request');
-const axios = require('axios');
-const SocksProxyAgent = require('socks-proxy-agent');
-const BilibiliConstants = require('../constants/BilibiliConstants');
-const config = require('../config');
+import request from 'request';
+import axios from 'axios';
+import SocksProxyAgent from 'socks-proxy-agent';
+import BilibiliConstants from '../constants/BilibiliConstants';
+import config from '../config';
 
 const baseRequest = request.defaults({
   headers: { 'User-Agent': config.UA },
@@ -27,15 +27,16 @@ http.interceptors.response.use(
   }
 );
 
-module.exports.setProxy = function(proxy) {
+export const setProxy = proxy => {
   http.defaults.httpsAgent = new SocksProxyAgent(proxy);
   request.defaults.agent = new SocksProxyAgent(proxy);
 };
-module.exports.setCookie = function(cookie) {
+
+export const setCookie = function(cookie) {
   http.defaults.headers.common['Cookie'] = cookie;
   const j = request.jar();
   j.setCookie(cookie);
   baseRequest.defaults.jar = j;
 };
-module.exports.http = http; // axios实例
-module.exports.request = baseRequest; // request实例
+
+export { http, baseRequest as request };

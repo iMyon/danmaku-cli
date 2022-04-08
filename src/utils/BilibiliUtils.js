@@ -36,7 +36,4 @@ function encodeAv(av) {
   return r.join('');
 }
 
-module.exports = {
-  decodeBv,
-  encodeAv,
-};
+export { decodeBv, encodeAv };

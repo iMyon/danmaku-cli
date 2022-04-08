@@ -1,5 +1,7 @@
-const DanmakuDownloader = require('../../src/utils/DanmakuDownloader');
+import DanmakuDownloader from '../../src/utils/DanmakuDownloader';
+
 const downloader = new DanmakuDownloader();
+
 describe('DanmakuDownloader', function() {
   it('download av', async function() {
     this.timeout(60000);

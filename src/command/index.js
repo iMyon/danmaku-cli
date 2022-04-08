@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-const program = require('commander');
-const download = require('./download');
-const convert = require('./convert');
-const downloadSeasons = require('./download-seasons');
-const downloadFinishBangumi = require('./download-finish-bangumi');
-const HttpUtil = require('../utils/HttpUtil');
+import program from 'commander';
+import HttpUtil from '../utils/HttpUtil';
+import convert from './convert';
+import download from './download';
+import downloadSeasons from './download-seasons';
+import downloadFinishBangumi from './download-finish-bangumi';
 
 program.version('0.0.1');
 

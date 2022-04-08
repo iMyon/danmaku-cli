@@ -4,14 +4,15 @@
   Date: 2019/7/17 21:27
 */
 
-const BangumiApi = require('../api/bangumi');
-const BaseCrawler = require('./BaseCrawler');
-const StringUtils = require('../utils/StringUtils');
-const fs = require('fs');
-const path = require('path');
-const chalk = require('chalk');
-const FsUtil = require('../utils/FsUtil');
-const { promisify } = require('util');
+import BangumiApi from '../api/bangumi';
+import BaseCrawler from './BaseCrawler';
+import StringUtils from '../utils/StringUtils';
+import * as fs from 'fs';
+import * as path from 'path';
+import chalk from 'chalk';
+import FsUtil from '../utils/FsUtil';
+import { promisify } from 'util';
+
 const logger = fs.createWriteStream('log.txt', {
   flags: 'a', // 'a' means appending (old data will be preserved)
 });
@@ -64,4 +65,4 @@ class FinishBangumiDownloader extends BaseCrawler {
   }
 }
 
-module.exports = FinishBangumiDownloader;
+export default FinishBangumiDownloader;

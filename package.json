@@ -2,13 +2,13 @@
   "name": "danmaku-cli",
   "version": "0.0.4",
   "bin": {
-    "danmaku": "src/command/index.js"
+    "danmaku": "lib/danmaku.js"
   },
   "publishConfig": {
     "access": "public"
   },
   "files": [
-    "src"
+    "lib"
   ],
   "lint-staged": {
     "src/**/*.{js}": [
@@ -18,7 +18,7 @@
   },
   "scripts": {
     "test": "mocha test/**/*.test.js",
-    "publish": "np --no-2fa --no-tests"
+    "build": "webpack --config build/webpack.config.js"
   },
   "dependencies": {
     "axios": "^0.19.0",
@@ -35,11 +35,19 @@
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
+    "@babel/cli": "^7.17.6",
+    "@babel/core": "^7.17.9",
+    "@babel/node": "^7.16.8",
+    "@babel/preset-env": "^7.16.11",
+    "babel-loader": "^8.2.4",
+    "clean-webpack-plugin": "^4.0.0",
     "eslint": "^6.0.1",
     "husky": "^3.0.0",
     "lint-staged": "^9.2.0",
     "mocha": "^6.1.4",
     "prettier": "1.18.2",
-    "pretty-quick": "^1.11.1"
+    "pretty-quick": "^1.11.1",
+    "webpack": "^5.72.0",
+    "webpack-cli": "^4.9.2"
   }
 }

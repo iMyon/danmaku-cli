@@ -4,9 +4,9 @@
   Date: 2019/7/17 21:27
 */
 
-const BangumiApi = require('../api/bangumi');
-const BaseCrawler = require('./BaseCrawler');
-const StringUtils = require('../utils/StringUtils');
+import BangumiApi from '../api/bangumi';
+import BaseCrawler from './BaseCrawler';
+import StringUtils from '../utils/StringUtils';
 
 class SeasonsDownloader extends BaseCrawler {
   constructor(config = {}) {
@@ -31,4 +31,4 @@ class SeasonsDownloader extends BaseCrawler {
   }
 }
 
-module.exports = SeasonsDownloader;
+export default SeasonsDownloader;

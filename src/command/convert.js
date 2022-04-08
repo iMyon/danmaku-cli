@@ -8,7 +8,8 @@ const writeFile = promisify(fs.writeFile);
 const exists = promisify(fs.exists);
 const readdir = promisify(fs.readdir);
 const stat = promisify(fs.stat);
-module.exports = function convert(program) {
+
+export default function convert(program) {
   program
     .command('convert')
     .description('转换xml弹幕文件为ass格式，支持文件或文件夹的批量转换')
@@ -86,4 +87,4 @@ module.exports = function convert(program) {
       }
       process.exit();
     });
-};
+}
