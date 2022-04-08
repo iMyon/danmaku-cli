@@ -17,10 +17,12 @@
     ]
   },
   "scripts": {
+    "prepare": "husky install",
+    "dev": "babel-node src/command/index.js",
+    "build": "webpack --config build/webpack.config.js",
     "test": "mocha --require @babel/register test/**/*.test.js",
     "lint": "eslint --ext .js ./",
-    "build": "webpack --config build/webpack.config.js",
-    "prepare": "husky install"
+    "release": "npm run build && release-it"
   },
   "dependencies": {
     "axios": "^0.19.0",
