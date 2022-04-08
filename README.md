@@ -82,7 +82,6 @@ Options:
   --play-res-y <number>               分辨率高 (default: 1080)
   --font <string>                     字体 (default: "微软雅黑")
   --bold <boolean>                    是否粗体 (default: true)
-  --accurate-danmaku-width <boolean>  提升弹幕宽度精准度，滚动弹幕排版更合理，但是非常影响处理效率，建议处理少量弹幕转换时开启 (default: false)
   --font-size <number>                字体大小 (default: 40)
   --line-limit <number>               最大弹幕行数 (default: 50)
   --speed <number>                    驻留时间（s） (default: 12)
