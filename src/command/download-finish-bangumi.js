@@ -1,4 +1,4 @@
-const FinishBangumiDownloader = require('../client/FinishBangumiDownloader');
+import FinishBangumiDownloader from '../client/FinishBangumiDownloader';
 
 export default function downloadFinishBangumi(program) {
   program

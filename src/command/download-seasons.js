@@ -1,4 +1,4 @@
-const SeasonsDownloader = require('../client/SeasonsDownloader');
+import SeasonsDownloader from '../client/SeasonsDownloader';
 
 export default function downloadSeasons(program) {
   program
