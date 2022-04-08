@@ -1,16 +1,25 @@
-const DanmakuConverter = require('./DanmakuConverter');
-const fs = require('fs');
-const path = require('path');
-const DanmakuApi = require('../api/danmaku');
-const BangumiApi = require('../api/bangumi');
-const StringUtils = require('./StringUtils');
-const { promisify } = require('util');
+/* eslint-disable no-await-in-loop,no-restricted-syntax */
+
+import * as fs from 'fs';
+import * as path from 'path';
+import { promisify } from 'util';
+import pLimit from 'p-limit';
+import ora from 'ora';
+import chalk from 'chalk';
+import StringUtils from './StringUtils';
+import BangumiApi from '../api/bangumi';
+import DanmakuApi from '../api/danmaku';
+import DanmakuConverter from './DanmakuConverter';
+import FsUtil from './FsUtil';
+import { decodeBv } from './BilibiliUtils';
+
 const writeFile = promisify(fs.writeFile);
-const pLimit = require('p-limit');
-const ora = require('ora');
-const chalk = require('chalk');
-const FsUtil = require('./FsUtil');
-const { decodeBv } = require('./BilibiliUtils');
+
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
 
 class DanmakuDownloader {
   constructor(config = {}) {
@@ -39,7 +48,7 @@ class DanmakuDownloader {
       return;
     }
     await FsUtil.mkdirWhenNotExist(this.config.basePath);
-    let outputPath = path.join(this.config.basePath, '' + bangumiSymbol + StringUtils.formatFilename(bangumiName));
+    let outputPath = path.join(this.config.basePath, `${bangumiSymbol}${StringUtils.formatFilename(bangumiName)}`);
     let pageList = [];
     if (bangumiSymbol.startsWith('av') || bangumiSymbol.startsWith('BV')) {
       const aid = bangumiSymbol.startsWith('av') ? bangumiSymbol.substr(2) : decodeBv(bangumiSymbol);
@@ -53,13 +62,11 @@ class DanmakuDownloader {
         console.log(`找不到番剧信息，已跳过[${bangumiSymbol}${bangumiName}]`);
         return;
       }
-      pageList = res.data.map(e => {
-        return {
-          cid: e.cid,
-          index: e.page,
-          name: e.part,
-        };
-      });
+      pageList = res.data.map((e) => ({
+        cid: e.cid,
+        index: e.page,
+        name: e.part,
+      }));
     } else if (bangumiSymbol.startsWith('ss')) {
       const currentSeasonId = bangumiSymbol.substr(2);
       const res = await BangumiApi.getSeason(currentSeasonId);
@@ -69,45 +76,49 @@ class DanmakuDownloader {
       await FsUtil.mkdirWhenNotExist(outputPath);
       const seasonTitle = StringUtils.formatFilename(res.result.season_title);
       await FsUtil.mkdirWhenNotExist(path.join(outputPath, seasonTitle));
-      res.result.episodes.forEach(e => (e.season_title = seasonTitle));
-      const episodes = res.result.episodes;
+      res.result.episodes.forEach((e) => {
+        e.season_title = seasonTitle;
+      });
+      const { episodes } = res.result;
       if (this.config.downloadRelatedSeason) {
         // 下载关联season
-        const seasonIds = res.result.seasons.map(e => e.season_id).filter(e => e + '' !== currentSeasonId);
-        for (let seasonId of seasonIds) {
-          const res = await BangumiApi.getSeason(seasonId);
-          const seasonTitle = StringUtils.formatFilename(res.result.season_title);
-          await FsUtil.mkdirWhenNotExist(path.join(outputPath, seasonTitle));
-          res.result.episodes.forEach(e => (e.season_title = seasonTitle));
-          episodes.push(...res.result.episodes);
+        const seasonIds = res.result.seasons.map((e) => e.season_id).filter((e) => `${e}` !== currentSeasonId);
+        // eslint-disable-next-line no-restricted-syntax
+        for (const seasonId of seasonIds) {
+          const res1 = await BangumiApi.getSeason(seasonId);
+          const seasonTitle1 = StringUtils.formatFilename(res1.result.season_title);
+          await FsUtil.mkdirWhenNotExist(path.join(outputPath, seasonTitle1));
+          res1.result.episodes.forEach((e) => {
+            e.season_title = seasonTitle1;
+          });
+          episodes.push(...res1.result.episodes);
         }
       }
-      pageList = episodes.map(e => {
-        return {
-          season_title: e.season_title,
-          cid: e.cid,
-          index: e.index,
-          name: e.index_title,
-        };
-      });
+      pageList = episodes.map((e) => ({
+        season_title: e.season_title,
+        cid: e.cid,
+        index: e.index,
+        name: e.index_title,
+      }));
     } else {
-      return Promise.reject('找不到匹配的解析规则' + bangumiSymbol);
+      Promise.reject(`找不到匹配的解析规则${bangumiSymbol}`);
+      return;
     }
     const downloadPromiseList = [];
-    for (let part of pageList) {
+    for (const part of pageList) {
       downloadPromiseList.push(
         this.limit(async () => {
-          let _outputPath = outputPath;
+          let tempOutputPath = outputPath;
           if (part.season_title) {
-            _outputPath = path.join(_outputPath, part.season_title);
+            tempOutputPath = path.join(tempOutputPath, part.season_title);
           }
           const xmlData = await DanmakuApi.getXml(part.cid);
           let filename = part.index;
           if (part.name) {
             filename += `.${StringUtils.formatFilename(part.name)}`;
           }
-          await writeFile(path.join(_outputPath, `${filename}.xml`), xmlData);
-          await writeFile(path.join(_outputPath, `${filename}.ass`), this.danmakuConverter.convert(xmlData));
+          await writeFile(path.join(tempOutputPath, `${filename}.xml`), xmlData);
+          await writeFile(path.join(tempOutputPath, `${filename}.ass`), this.danmakuConverter.convert(xmlData));
           this.spinner.text = `pending: ${this.limit.pendingCount}`;
           await sleep(this.config.restTime);
         })
@@ -119,8 +130,4 @@ class DanmakuDownloader {
   }
 }
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-module.exports = DanmakuDownloader;
+export default DanmakuDownloader;

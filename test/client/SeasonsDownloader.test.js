@@ -4,9 +4,10 @@
   Date: 2019/7/17 22:36
 */
 
-const SeasonsDownloaderTest = require('../../src/client/SeasonsDownloader');
-describe('DownloadAllSeason', function() {
-  it('download', async function() {
+import SeasonsDownloaderTest from '../../src/client/SeasonsDownloader';
+
+describe('DownloadAllSeason', function () {
+  it('download', async function () {
     this.timeout(Infinity);
     const seasonsDownloader = new SeasonsDownloaderTest({
       startPage: 2,

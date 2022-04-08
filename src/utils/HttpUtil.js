@@ -1,8 +1,8 @@
-const request = require('request');
-const axios = require('axios');
-const SocksProxyAgent = require('socks-proxy-agent');
-const BilibiliConstants = require('../constants/BilibiliConstants');
-const config = require('../config');
+import request from 'request';
+import axios from 'axios';
+import SocksProxyAgent from 'socks-proxy-agent';
+import BilibiliConstants from '../constants/BilibiliConstants';
+import config from '../config';
 
 const baseRequest = request.defaults({
   headers: { 'User-Agent': config.UA },
@@ -15,27 +15,28 @@ const http = axios.create({
 });
 
 http.interceptors.response.use(
-  function(response) {
+  (response) => {
     if (response.data && response.data.code <= -400) {
       return Promise.reject(response.data);
     }
     return response.data;
   },
-  function(error) {
+  (error) => {
     error.message = `Request url: ${error.config.url}\n${error.message}`;
     return Promise.reject(error);
   }
 );
 
-module.exports.setProxy = function(proxy) {
+export const setProxy = (proxy) => {
   http.defaults.httpsAgent = new SocksProxyAgent(proxy);
   request.defaults.agent = new SocksProxyAgent(proxy);
 };
-module.exports.setCookie = function(cookie) {
-  http.defaults.headers.common['Cookie'] = cookie;
+
+export const setCookie = (cookie) => {
+  http.defaults.headers.common.Cookie = cookie;
   const j = request.jar();
   j.setCookie(cookie);
   baseRequest.defaults.jar = j;
 };
-module.exports.http = http; // axios实例
-module.exports.request = baseRequest; // request实例
+
+export { http, baseRequest as request };

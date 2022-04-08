@@ -1,0 +1,5 @@
+/lib
+/node_modules
+/test
+.eslintrc.js
+babel.config.js

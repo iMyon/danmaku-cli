@@ -4,4 +4,4 @@ const BilibiliConstants = {
   API_HOST: 'https://api.bilibili.com',
 };
 
-module.exports = BilibiliConstants;
+export default BilibiliConstants;

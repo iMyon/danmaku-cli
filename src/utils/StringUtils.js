@@ -4,7 +4,7 @@
   Date: 2019/7/17 22:44
 */
 
-const eaw = require('eastasianwidth');
+import eaw from 'eastasianwidth';
 
 class StringUtils {
   static formatFilename(str) {
@@ -20,4 +20,4 @@ class StringUtils {
   }
 }
 
-module.exports = StringUtils;
+export default StringUtils;
