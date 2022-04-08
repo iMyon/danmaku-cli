@@ -1,10 +1,10 @@
 /* eslint-disable no-await-in-loop */
 
-const fs = require('fs');
-const path = require('path');
-const chalk = require('chalk');
-const { promisify } = require('util');
-const DanmakuConverter = require('../utils/DanmakuConverter');
+import * as fs from 'fs';
+import * as path from 'path';
+import chalk from 'chalk';
+import { promisify } from 'util';
+import DanmakuConverter from '../utils/DanmakuConverter';
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);

@@ -1,4 +1,4 @@
-const DanmakuDownloader = require('../utils/DanmakuDownloader');
+import DanmakuDownloader from '../utils/DanmakuDownloader';
 
 export default function download(program) {
   program
